@@ -1,7 +1,14 @@
 from fastapi import FastAPI
 from . import teacher
+from database import createTables
+from contextlib import asynccontextmanager
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    createTables()
+    yield
+
+app = FastAPI(lifespan=lifespan)
 app.include_router(teacher)
 
 @app.get("/")
