@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from database import SessionDep, Teacher
+from ..database import SessionDep, Teacher
 from sqlmodel import select
 
 router = APIRouter(prefix="/teacher", tags=["teacher"])
