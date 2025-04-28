@@ -9,6 +9,8 @@ from ..security import get_current_user, create_access_token, Token
 from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
 from sqlmodel import select
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -28,6 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+ph = PasswordHasher()
 
 @app.get("/")
 async def root():
@@ -44,10 +47,12 @@ async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depe
             status_code=401,
             detail="User not found",
         )
-    if form_data.password != user.password:
+    try:
+        ph.verify(user.password, form_data.password)
+    except VerifyMismatchError:
         raise HTTPException(
             status_code=401,
-            detail="Incorrect password",
+            detail="Invalid username or password",
         )
     token = create_access_token(
         data={"sub": form_data.username}

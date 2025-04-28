@@ -16,4 +16,4 @@ class Teacher(Base, table=True):
 class User(Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
     username: str = Field(max_length=50 , nullable=False, unique=True)
-    password: str = Field(max_length=50 , nullable=False)
+    password: str = Field(max_length=200 , nullable=False)
