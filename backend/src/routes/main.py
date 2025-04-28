@@ -4,13 +4,14 @@ from ..database import createTables, User, SessionDep
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware
-from typing import Annotated
-from ..security import get_current_user, create_access_token, Token
+from ..security import create_access_token, UserDep
 from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
 from sqlmodel import select
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from pydantic import BaseModel
+
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -32,9 +33,15 @@ app.add_middleware(
 
 ph = PasswordHasher()
 
+
 @app.get("/")
 async def root():
     return {"message": "Hello World!"}
+
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 @app.post("/token")
@@ -64,5 +71,5 @@ async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depe
 
 
 @app.get("/me")
-async def read_user_profile(current_user: Annotated[User, Depends(get_current_user)]) -> User:
+async def read_user_profile(current_user: UserDep) -> User:
     return current_user

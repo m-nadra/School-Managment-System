@@ -1,4 +1,3 @@
-from pydantic import BaseModel
 from typing import Annotated
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends
@@ -14,9 +13,6 @@ SECRET_KEY = getenv("SECRET_KEY", "5974ba32fd3279e9d287a9f3926ebf4fa0d153c277754
 ALGORITHM = getenv("ALGORITHM", "HS256")
 TOKEN_EXPIRE_MINUTES = int(getenv("TOKEN_EXPIRE_MINUTES", 30))
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 async def get_current_user(session: SessionDep, token: Annotated[str, Depends(oauth2_scheme)]) -> User:
     """Get the current user from the token."""
@@ -30,6 +26,7 @@ async def get_current_user(session: SessionDep, token: Annotated[str, Depends(oa
         )
     return user
 
+
 def create_access_token(data: dict) -> str:
     """Generate a JWT token with an expiration time."""
     to_encode = data.copy()
@@ -37,6 +34,7 @@ def create_access_token(data: dict) -> str:
     to_encode.update({"exp": expire})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
+
 
 def decode_access_token(token: str) -> str:
     """Decode a JWT token and return the username."""
@@ -48,3 +46,5 @@ def decode_access_token(token: str) -> str:
         return username
     except jwt.JWTError:
         raise jwt.credentials_exception
+    
+UserDep = Annotated[User, Depends(get_current_user)]
