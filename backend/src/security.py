@@ -42,9 +42,16 @@ def decode_access_token(token: str) -> str:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         username = payload.get("sub")
         if username is None:
-            raise jwt.credentials_exception
+            raise HTTPException(
+                status_code=401,
+                detail="Invalid token",
+            )
         return username
-    except jwt.JWTError:
-        raise jwt.credentials_exception
+    except jwt.InvalidTokenError:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid token",
+        )
+
     
 UserDep = Annotated[User, Depends(get_current_user)]

@@ -59,7 +59,7 @@ async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depe
     except VerifyMismatchError:
         raise HTTPException(
             status_code=401,
-            detail="Invalid username or password",
+            detail="Invalid password",
         )
     token = create_access_token(
         data={"sub": form_data.username}
