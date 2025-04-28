@@ -1,12 +1,14 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, HTTPException
 from . import teacher
-from ..database import createTables
+from ..database import createTables, User, SessionDep
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Annotated
-from ..security import get_current_user, User, generate_token
+from ..security import get_current_user, create_access_token, Token
+from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
+from sqlmodel import select
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -33,10 +35,29 @@ async def root():
 
 
 @app.post("/token")
-async def login():
-    return {"access_token": f"{generate_token()}", "token_type": "bearer"}
+async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+    """Generates a JWT token for the user if user exists and password is correct."""
+    query = select(User).where(User.username == form_data.username)
+    user = session.exec(query).first()
+    if not user:
+        raise HTTPException(
+            status_code=401,
+            detail="User not found",
+        )
+    if form_data.password != user.password:
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect password",
+        )
+    token = create_access_token(
+        data={"sub": form_data.username}
+    )
+    return Token(
+        access_token=token,
+        token_type="bearer"
+    )
 
 
 @app.get("/me")
-async def read_user_profile(current_user: Annotated[User, Depends(get_current_user)]):
+async def read_user_profile(current_user: Annotated[User, Depends(get_current_user)]) -> User:
     return current_user

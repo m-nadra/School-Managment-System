@@ -12,3 +12,8 @@ class Teacher(Base, table=True):
     id: int | None = Field(default=None, primary_key=True)
     first_name: str = Field(max_length=50 , nullable=False)
     last_name: str = Field(max_length=50 , nullable=False)
+
+class User(Base, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    username: str = Field(max_length=50 , nullable=False, unique=True)
+    password: str = Field(max_length=50 , nullable=False)
