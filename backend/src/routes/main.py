@@ -72,4 +72,5 @@ async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depe
 
 @app.get("/me")
 async def read_user_profile(current_user: UserDep) -> User:
+    """Returns the current user profile."""
     return current_user
