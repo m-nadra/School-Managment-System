@@ -7,14 +7,15 @@ import {
     Skeleton,
     Button,
     InputGroup,
+    Text,
 } from "@chakra-ui/react"
-import { useColorMode, useColorModeValue } from "./components/ui/color-mode"
 import { 
     LuMoon, 
     LuSun,
     LuUser,
     LuKey,
 } from "react-icons/lu"
+import { useColorMode, useColorModeValue } from "./components/ui/color-mode"
 import { PasswordInput } from "@/components/ui/password-input"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
@@ -22,11 +23,12 @@ import { useNavigate } from "react-router-dom"
 function LoginForm() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
+    const { toggleColorMode, colorMode } = useColorMode()
     const navigate = useNavigate();
-  
+
     const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
-
 
         const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
         const response = await fetch(`${apiUrl}/token`, {
@@ -40,34 +42,28 @@ function LoginForm() {
             }),
         });
     
+        const data = await response.json();
         if (response.ok) {
-            const data = await response.json();
             localStorage.setItem("token", data.access_token);
             navigate("/");
         } else {
-            alert("Błąd logowania. Sprawdź dane.");
+            setErrorMessage(data.detail || "Login failed");
         }
     };
 
-    const { toggleColorMode, colorMode } = useColorMode()
     return (
         <form onSubmit={handleLogin} method="POST">
             <Flex justifyContent='center' alignItems='center' flexDirection='column' h='100vh' textAlign='center' gap={4}>
-                <Flex
-                    flexDirection="column"
-                    bg={useColorModeValue('gray.100', 'gray.900')}
-                    p={12}
-                    borderRadius={8}
-                    boxShadow="lg"
-                    spaceY={3}>
-                        <Heading>Login to system</Heading>
-                        <InputGroup startElement={<LuUser />}>
+                <Flex flexDirection="column" bg={useColorModeValue('gray.100', 'gray.900')} p={12} borderRadius={8} boxShadow="lg" spaceY={3}>
+                    <Heading>Login to system</Heading>
+                    <InputGroup startElement={<LuUser />}>
                         <Input placeholder="Username" size='lg' onChange={(e) => setUsername(e.target.value)} required/>
-                        </InputGroup>
-                        <InputGroup startElement={<LuKey />}>
+                    </InputGroup>
+                    <InputGroup startElement={<LuKey />}>
                         <PasswordInput placeholder="Password" size='lg' onChange={(e) => setPassword(e.target.value)} required/>
-                        </InputGroup>
-                        <Button type="submit">Login</Button>
+                    </InputGroup>
+                    <Button type="submit">Login</Button>
+                    {errorMessage && <Text color='red'>{errorMessage}</Text>}
                 </Flex>
                 <ClientOnly fallback={<Skeleton boxSize="8" />}>
                     <IconButton onClick={toggleColorMode} variant="ghost" size="md">
