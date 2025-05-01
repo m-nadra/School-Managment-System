@@ -15,12 +15,12 @@ import {
     LuUser,
     LuKey,
 } from "react-icons/lu"
-import { useColorMode, useColorModeValue } from "./components/ui/color-mode"
+import { useColorMode, useColorModeValue } from "../components/ui/color-mode"
 import { PasswordInput } from "@/components/ui/password-input"
 import { useState } from "react"
 import { useNavigate } from "react-router-dom"
 
-function LoginForm() {
+export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
@@ -33,10 +33,6 @@ function LoginForm() {
         const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
         const response = await fetch(`${apiUrl}/token`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-                "Accept": "application/json",
-            },
             credentials: "include",
             body: new URLSearchParams({
                 username: username,
@@ -45,7 +41,7 @@ function LoginForm() {
         });
     
         if (response.ok) {
-            navigate("/");
+            navigate("/dashboard");
         } else {
             const errorData = await response.json();
             setErrorMessage(errorData['detail'] || "Login failed");
@@ -75,5 +71,3 @@ function LoginForm() {
         </form>
     )
 }
-
-export default LoginForm
