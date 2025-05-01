@@ -10,6 +10,7 @@ from os import getenv
 from sqlmodel import select
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
+from fastapi.responses import Response
 from pydantic import BaseModel
 
 
@@ -38,14 +39,12 @@ ph = PasswordHasher()
 async def root():
     return {"message": "Hello World!"}
 
-
 class Token(BaseModel):
     access_token: str
     token_type: str
 
-
 @app.post("/token")
-async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+async def login(session: SessionDep, response: Response, form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)
     user = session.exec(query).first()
@@ -64,9 +63,17 @@ async def login(session: SessionDep, form_data: OAuth2PasswordRequestForm = Depe
     token = create_access_token(
         data={"sub": form_data.username}
     )
+    response.set_cookie(
+        key="token",
+        value=token,
+        httponly=True,
+        samesite="lax",
+        secure=False,
+        expires=60 * 30,
+    )
     return Token(
         access_token=token,
-        token_type="bearer"
+        token_type="bearer",
     )
 
 

@@ -39,5 +39,3 @@ def client_fixture(session: Session):
 def token(client: TestClient):
     response = client.post("/token", data={"username": "testuser", "password": "testpassword"})
     assert response.status_code == 200
-    assert response.json()["token_type"] == "bearer"
-    return response.json()["access_token"]

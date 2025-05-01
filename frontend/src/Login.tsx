@@ -34,20 +34,21 @@ function LoginForm() {
         const response = await fetch(`${apiUrl}/token`, {
             method: "POST",
             headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Accept": "application/json",
             },
+            credentials: "include",
             body: new URLSearchParams({
-            username: username,
-            password: password,
+                username: username,
+                password: password,
             }),
         });
     
-        const data = await response.json();
         if (response.ok) {
-            localStorage.setItem("token", data.access_token);
             navigate("/");
         } else {
-            setErrorMessage(data.detail || "Login failed");
+            const errorData = await response.json();
+            setErrorMessage(errorData['detail'] || "Login failed");
         }
     };
 

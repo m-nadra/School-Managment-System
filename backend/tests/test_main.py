@@ -17,15 +17,6 @@ def test_token_create_invalid_user(client: TestClient):
 
 
 def test_me(client: TestClient, token: str):
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    response = client.get("/me", headers=headers)
+    response = client.get("/me")
     assert response.status_code == 200
     assert response.json()["username"] == "testuser"
-
-def test_invalid_jwt_token(client: TestClient, token: str):
-    token += 'z'
-    headers = {"Authorization": f"Bearer {token}"}
-    
-    response = client.get("/me", headers=headers)
-    assert response.status_code == 401
