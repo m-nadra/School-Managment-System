@@ -50,8 +50,8 @@ export default function Login() {
 
     return (
         <form onSubmit={handleLogin} method="POST">
-            <Flex justifyContent='center' alignItems='center' flexDirection='column' h='100vh' textAlign='center' gap={4}>
-                <Flex flexDirection="column" bg={useColorModeValue('gray.100', 'gray.900')} p={12} borderRadius={8} boxShadow="lg" spaceY={3}>
+            <Flex justifyContent='center' alignItems='center' flexDirection='column' h='100vh' textAlign='center' gap={4} bg={useColorModeValue('gray.100', 'gray.800')}>
+                <Flex flexDirection="column" p={12} borderRadius={8} boxShadow="lg" spaceY={3}>
                     <Heading>Login to system</Heading>
                     <InputGroup startElement={<LuUser />}>
                         <Input placeholder="Username" size='lg' onChange={(e) => setUsername(e.target.value)} required/>
