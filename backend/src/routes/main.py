@@ -81,3 +81,10 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
 async def read_user_profile(current_user: UserDep) -> User:
     """Returns the current user profile."""
     return current_user
+
+
+@app.post("/logout")
+async def logout(response: Response):
+    """Logs out the user by deleting the JWT token."""
+    response.delete_cookie(key="token")
+    return {"message": "Logged out successfully"}

@@ -9,11 +9,20 @@ import { useNavigate } from "react-router-dom";
 import { useColorMode, useColorModeValue } from "../components/ui/color-mode";
 import { LuMoon, LuSun, LuLogOut } from "react-icons/lu";
 
+
 export default function Nav() {
     const { colorMode, toggleColorMode } = useColorMode();
     const [user, setUser] = useState("");
     const navigate = useNavigate();
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
+    const Logout = async () => {
+        await fetch(`${apiUrl}/logout`, {
+            method: "POST",
+            credentials: "include"
+        });
+        navigate("/login");
+    };
+
     useEffect(() => {
         fetch(`${apiUrl}/me`, {
             method: "GET",
@@ -37,7 +46,7 @@ export default function Nav() {
             <Flex alignSelf="flex-end" bg={useColorModeValue("gray.200", "gray.800")}
             w="100%" justify="space-between" p="3" borderRadius="lg" justifySelf="center" align="center">
                 <Text fontSize="md" fontWeight="bold">{user.toUpperCase()}</Text>
-                <IconButton size="sm">
+                <IconButton size="sm" onClick={Logout}>
                     <LuLogOut />
                 </IconButton>
             </Flex>
