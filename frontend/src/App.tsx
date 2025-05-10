@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
-import Home from "./pages/Home";
+import Dashboard from "./pages/Dashboard";
 import Main from "./pages/Main";
 
 export default function App() {
@@ -9,9 +9,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Main />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/dashboard" element={<Home />}>
-          <Route path="profile" element={<Home />} />
-        </Route>
+        <Route path="/dashboard" element={<Dashboard />}/>
       </Routes>
     </Router>
   );
