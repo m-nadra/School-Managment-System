@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Main from "./pages/Main";
+import Teachers from './components/Teachers';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -14,7 +15,11 @@ createRoot(document.getElementById('root')!).render(
         <Routes>
           <Route path="/" element={<Main />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />}/>
+          <Route path="/dashboard" element={<Dashboard />} >
+            <Route index element={<p>Dashboard</p>} />
+            <Route path="teachers" element={<Teachers/>} />
+            <Route path="profile" element={<p>Hello</p>} />
+          </Route>
         </Routes>
       </Router>
     </Provider>
