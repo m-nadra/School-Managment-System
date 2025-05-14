@@ -22,7 +22,7 @@ class Teacher(Base, table=True):
     secondname: Optional[str] = Field(max_length=20 , nullable=True)
     lastname: str = Field(max_length=30, nullable=False)
     email: str = Field(max_length=40 , nullable=False, unique=True)
-    user_id: int = Field(foreign_key="user.id", nullable=False)
+    user_id: Optional[int] = Field(foreign_key="user.id")
     user: "User" = Relationship(back_populates="teacher")
 
 
