@@ -48,8 +48,8 @@ async def update_teacher(teacher_id: int, teacher: Teacher, session: SessionDep)
     db_teacher = session.get(Teacher, teacher_id)
     if not db_teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")
-    db_teacher.first_name = teacher.first_name
-    db_teacher.last_name = teacher.last_name
+    db_teacher.firstname = teacher.firstname
+    db_teacher.lastname = teacher.lastname
     session.commit()
     session.refresh(db_teacher)
     return db_teacher

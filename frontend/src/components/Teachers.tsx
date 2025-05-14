@@ -7,9 +7,13 @@ import { useNavigate } from "react-router-dom";
 
 type Teacher = {
     id: number;
-    first_name: string;
-    last_name: string;
+    firstname: string;
+    secondname: string;
+    lastname: string;
+    email: string;
+    user_id: number;
 }
+
 export default function Teachers() {
     const [teachers, setTeachers] = useState<Array<Teacher>>([]);
     const navigate = useNavigate();
@@ -34,14 +38,18 @@ export default function Teachers() {
                 <Table.Header>
                     <Table.Row>
                         <Table.ColumnHeader>First Name</Table.ColumnHeader>
+                        <Table.ColumnHeader>Second Name</Table.ColumnHeader>
                         <Table.ColumnHeader>Last Name</Table.ColumnHeader>
+                        <Table.ColumnHeader>Email</Table.ColumnHeader>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
                     {teachers.map((teacher) => (
                         <Table.Row key={teacher.id}>
-                            <Table.Cell>{teacher.first_name}</Table.Cell>
-                            <Table.Cell>{teacher.last_name}</Table.Cell>
+                            <Table.Cell>{teacher.firstname}</Table.Cell>
+                            <Table.Cell>{teacher.secondname}</Table.Cell>
+                            <Table.Cell>{teacher.lastname}</Table.Cell>
+                            <Table.Cell>{teacher.email}</Table.Cell>
                         </Table.Row>
                     ))}
                 </Table.Body>

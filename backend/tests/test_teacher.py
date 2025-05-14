@@ -4,8 +4,8 @@ from src.database import Teacher
 
 
 def test_root(session: Session, client: TestClient):
-    teacher1 = Teacher(first_name="John", last_name="Doe")
-    teacher2 = Teacher(first_name="Jane", last_name="Smith")
+    teacher1 = Teacher(firstname="John", lastname="Doe")
+    teacher2 = Teacher(firstname="Jane", lastname="Smith")
     session.add(teacher1)
     session.add(teacher2)
     session.commit()
@@ -32,7 +32,7 @@ def test_add_teacher(client: TestClient):
 
 
 def test_get_teacher(client: TestClient, session: Session):
-    teacher = Teacher(first_name="John", last_name="Doe")
+    teacher = Teacher(firstname="John", lastname="Doe")
     session.add(teacher)
     session.commit()
     
@@ -60,7 +60,7 @@ def test_teacher_not_found(client: TestClient):
 
 
 def test_delete_teacher(client: TestClient, session: Session):
-    teacher = Teacher(first_name="John", last_name="Doe")
+    teacher = Teacher(firstname="John", lastname="Doe")
     session.add(teacher)
     session.commit()
     
@@ -72,7 +72,7 @@ def test_delete_teacher(client: TestClient, session: Session):
 
 
 def test_update_teacher(client: TestClient, session: Session):
-    teacher = Teacher(first_name="John", last_name="Doe")
+    teacher = Teacher(firstname="John", lastname="Doe")
     session.add(teacher)
     session.commit()
     
