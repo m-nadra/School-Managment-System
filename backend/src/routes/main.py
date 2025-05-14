@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Depends, HTTPException
-from . import teacher
+from . import teacher, user
 from ..database import createTables, User, SessionDep
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
@@ -21,6 +21,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(teacher)
+app.include_router(user)
 app.mount("/metrics", make_asgi_app(), name="metrics")
 
 FRONTEND_URL : str = getenv("FRONTEND_URL", "http://localhost:5173")
