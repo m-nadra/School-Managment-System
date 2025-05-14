@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Main from "./pages/Main";
 import Teachers from './components/Teachers';
+import Profile from './components/Profile';
 
 
 createRoot(document.getElementById('root')!).render(
@@ -18,7 +19,7 @@ createRoot(document.getElementById('root')!).render(
           <Route path="/dashboard" element={<Dashboard />} >
             <Route index element={<p>Dashboard</p>} />
             <Route path="teachers" element={<Teachers/>} />
-            <Route path="profile" element={<p>Hello</p>} />
+            <Route path="profile" element={<Profile/>} />
           </Route>
         </Routes>
       </Router>

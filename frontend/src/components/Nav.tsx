@@ -9,10 +9,13 @@ import { useNavigate } from "react-router-dom";
 import { useColorMode, useColorModeValue } from "../components/ui/color-mode";
 import { LuMoon, LuSun, LuLogOut } from "react-icons/lu";
 
-
+type User = {
+    username: string;
+    role: string; 
+}
 export default function Nav() {
     const { colorMode, toggleColorMode } = useColorMode();
-    const [user, setUser] = useState("");
+    const [user, setUser] = useState<User>();
     const navigate = useNavigate();
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
     const Logout = async () => {
@@ -31,7 +34,7 @@ export default function Nav() {
         .then(async response => {
             if (response.ok) {
                 const data = await response.json();
-                setUser(data.username);
+                setUser(data.account_data);
             }
             else {
                 navigate("/login");
@@ -45,7 +48,10 @@ export default function Nav() {
             </IconButton>
             <Flex alignSelf="flex-end" bg={useColorModeValue("gray.200", "gray.800")}
             w="100%" justify="space-between" p="3" borderRadius="lg" justifySelf="center" align="center">
-                <Text fontSize="md" fontWeight="bold">{user.toUpperCase()}</Text>
+                <Flex flexDirection="column">
+                    <Text fontSize="md" fontWeight="bold">{user ? user.username.toUpperCase() : ""}</Text>
+                    <Text fontSize="sm">{user ? `Role: ${user.role.toUpperCase()}` : ""}</Text>
+                </Flex>
                 <IconButton size="sm" onClick={Logout}>
                     <LuLogOut />
                 </IconButton>

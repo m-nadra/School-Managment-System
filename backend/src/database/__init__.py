@@ -7,14 +7,17 @@ import enum
 
 __all__ = ["SessionDep", "createTables"]
 
+
 class Base(SQLModel):
     pass
 
-class Roles(enum.Enum):
+
+class Roles(str, enum.Enum):
     ADMIN = "admin"
     TEACHER = "teacher"
     STUDENT = "student"
     SECRETARY = "secretary"
+
 
 class Teacher(Base, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
