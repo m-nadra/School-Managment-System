@@ -1,5 +1,8 @@
 import {
-    Flex
+    Flex,
+    Text,
+    Heading,
+    Button
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 
@@ -35,9 +38,21 @@ export default function Profile() {
     }, []);
 
     return (
-        <Flex>
-            {`${user?.account_data.username} ${user?.account_data.role}` }
-            {user?.personal_data ? `${user.personal_data.firstname} ${user.personal_data.lastname} ${user.personal_data.email}` : ""}
+        <Flex justifyContent="space-around" align="center" w="85%">
+            <Flex direction="column" alignItems="center" gap={4} h="100vh" w="50%" justify="center">
+                <Heading>Account</Heading>
+                <Text>Username: {user?.account_data.username}</Text>
+                <Text>Role: {user?.account_data.role}</Text>
+                <Button>Change password</Button>
+            </Flex>
+            <Flex direction="column" alignItems="center" gap={4} w="50%" h="100vh" justify="center">
+                <Heading>Personal data</Heading>
+                <Text>Firstname: {user?.personal_data ? user.personal_data.firstname : ""}</Text>
+                <Text>Secondname: {user?.personal_data ? user.personal_data.secondname : ""}</Text>
+                <Text>Lastname: {user?.personal_data ? user.personal_data.lastname : ""}</Text>
+                <Text>Email: {user?.personal_data ? user.personal_data.email : ""}</Text>
+                <Button>Edit data</Button>
+            </Flex>
         </Flex>
     );
 }
