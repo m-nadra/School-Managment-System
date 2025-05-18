@@ -4,6 +4,9 @@ from fastapi import APIRouter, HTTPException
 from ..database import SessionDep, User
 from sqlmodel import select
 from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
+from ..security import UserDep
+from pydantic import BaseModel
 
 router = APIRouter(prefix="/user", tags=["user"])
 ph = PasswordHasher()
@@ -57,3 +60,21 @@ async def update_user(user_id: int, user: User, session: SessionDep) -> User:
     session.commit()
     session.refresh(db_user)
     return db_user
+
+
+class ChangePasswordBody(BaseModel):
+    old_password: str
+    new_password: str
+
+
+@router.post("/change_password")
+async def change_password(body: ChangePasswordBody, session: SessionDep, current_user: UserDep) -> dict:
+    """Change the password of a user."""
+    try:
+        ph.verify(current_user.password, body.old_password)
+    except VerifyMismatchError:
+        raise HTTPException(status_code=401, detail="Old password is incorrect")
+    current_user.password = ph.hash(body.new_password)
+    session.commit()
+    session.refresh(current_user)
+    return {"message": "Password changed successfully"}
