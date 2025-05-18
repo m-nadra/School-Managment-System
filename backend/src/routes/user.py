@@ -55,7 +55,7 @@ async def update_user(user_id: int, user: User, session: SessionDep) -> User:
     if not db_user:
         raise HTTPException(status_code=404, detail="User not found")
     db_user.username = user.username
-    db_user.password = user.password
+    db_user.password = ph.hash(user.password)
     db_user.role = user.role
     session.commit()
     session.refresh(db_user)
