@@ -46,14 +46,16 @@ export default function Profile() {
                 <Text>Role: {user?.account_data.role}</Text>
                 <ChangePassword/>
             </Flex>
-            <Flex direction="column" alignItems="center" gap={4} w="50%" h="100vh" justify="center">
-                <Heading>Personal data</Heading>
-                <Text>Firstname: {user?.personal_data ? user.personal_data.firstname : ""}</Text>
-                <Text>Secondname: {user?.personal_data ? user.personal_data.secondname : ""}</Text>
-                <Text>Lastname: {user?.personal_data ? user.personal_data.lastname : ""}</Text>
-                <Text>Email: {user?.personal_data ? user.personal_data.email : ""}</Text>
-                <Button>Edit data</Button>
-            </Flex>
+            {user?.account_data.role === "teacher" && <>
+                <Flex direction="column" alignItems="center" gap={4} w="50%" h="100vh" justify="center">
+                    <Heading>Personal data</Heading>
+                        <Text>Firstname: {user?.personal_data ? user.personal_data.firstname : ""}</Text>
+                        <Text>Secondname: {user?.personal_data ? user.personal_data.secondname : ""}</Text>
+                        <Text>Lastname: {user?.personal_data ? user.personal_data.lastname : ""}</Text>
+                        <Text>Email: {user?.personal_data ? user.personal_data.email : ""}</Text>
+                    <Button>Edit data</Button>
+                </Flex>
+            </>}
         </Flex>
     );
 }
