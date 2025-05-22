@@ -20,6 +20,9 @@ createRoot(document.getElementById('root')!).render(
             <Route index element={<p>Dashboard</p>} />
             <Route path="teachers" element={<Teachers/>} />
             <Route path="profile" element={<Profile/>} />
+            <Route path="students" element={<p>Students</p>} />
+            <Route path="classes" element={<p>Classes</p>} />
+            <Route path="users" element={<p>User managment</p>} />
           </Route>
         </Routes>
       </Router>

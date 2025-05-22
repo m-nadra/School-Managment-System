@@ -8,7 +8,9 @@ import { useNavigate } from "react-router-dom";
 import { useColorMode, useColorModeValue } from "../components/ui/color-mode";
 import { LuMoon, LuSun, LuLogOut } from "react-icons/lu";
 import { GiTeacher } from "react-icons/gi";
-import { CgProfile } from "react-icons/cg";
+import { FaHome, FaUserCircle, FaUserGraduate } from "react-icons/fa";
+import { SiGoogleclassroom } from "react-icons/si";
+import { GrUserSettings } from "react-icons/gr";
 import { Link } from "react-router-dom";
 
 type User = {
@@ -48,14 +50,34 @@ export default function Nav() {
             <IconButton onClick={toggleColorMode} variant="ghost" size="md">
                 {colorMode === "light" ? <LuSun /> : <LuMoon />}
             </IconButton>
-            <Link to="profile">
+            <Link to="">
                 <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
-                    <CgProfile/><Text fontSize="lg">Profile</Text>
+                    <FaHome/><Text fontSize="lg">Dashboard</Text>
+                </Flex>
+            </Link>
+            <Link to="students">
+                <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
+                    <FaUserGraduate/><Text fontSize="lg">Students</Text>
+                </Flex>
+            </Link>
+            <Link to="classes">
+                <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
+                    <SiGoogleclassroom/><Text fontSize="lg">Classes</Text>
                 </Flex>
             </Link>
             <Link to="teachers">
                 <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
                     <GiTeacher/><Text fontSize="lg">Teachers</Text>
+                </Flex>
+            </Link>
+            <Link to="users">
+                <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
+                    <GrUserSettings/><Text fontSize="lg">User Managment</Text>
+                </Flex>
+            </Link>
+            <Link to="profile">
+                <Flex bg={useColorModeValue("gray.200", "gray.800")} p="2" gap="2" align="center" borderRadius="lg">
+                    <FaUserCircle/><Text fontSize="lg">My profile</Text>
                 </Flex>
             </Link>
             <Flex justifySelf="end" bg={useColorModeValue("gray.200", "gray.800")} mt="auto"
