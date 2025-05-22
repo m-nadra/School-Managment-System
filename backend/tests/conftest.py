@@ -27,7 +27,7 @@ def client_fixture(session: Session):
     
     ph = PasswordHasher()
     hashed_password = ph.hash("testpassword")
-    test_user = User(username="testuser", password=hashed_password)
+    test_user = User(username="testuser", password=hashed_password, role="admin")
     session.add(test_user)
     session.commit()
     
@@ -37,5 +37,5 @@ def client_fixture(session: Session):
 
 @pytest.fixture
 def token(client: TestClient):
-    response = client.post("/token", data={"username": "testuser", "password": "testpassword"})
+    response = client.post("/token", data={"username": "testuser", "password": "testpassword", "role": "admin"})
     assert response.status_code == 200
