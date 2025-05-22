@@ -17,7 +17,7 @@ def teacher(client: TestClient, token: str):
     yield teacher.json()
 
 
-def test_teacher_create(client: TestClient, token: str, teacher: dict):
+def test_teacher_create(client: TestClient, teacher: dict):
     """Test creating a teacher and user associated with teacher."""
     assert teacher["id"] == 1
     assert teacher["firstname"] == "John"
@@ -31,7 +31,7 @@ def test_teacher_create(client: TestClient, token: str, teacher: dict):
     assert user["role"] == "teacher"
 
 
-def test_read_teacher(client: TestClient, token: str, teacher: dict):
+def test_read_teacher(client: TestClient, teacher: dict):
     teacher2 = client.post(
         "/teacher",
         json={
@@ -45,11 +45,11 @@ def test_read_teacher(client: TestClient, token: str, teacher: dict):
     assert response.status_code == 200
     response = response.json()
     assert len(response) == 2
-    assert response[0]["firstname"] == "John"
+    assert response[0]["firstname"] == teacher["firstname"]
     assert response[1]["firstname"] == "Jane"
 
 
-def test_teacher_delete(client: TestClient, token: str, teacher: dict):
+def test_teacher_delete(client: TestClient, teacher: dict):
     """Test deleting a teacher and user associated with teacher."""    
     teacher_exists_response = client.get(f"/teacher/{teacher['id']}")
     assert teacher_exists_response.status_code == 200
@@ -75,7 +75,7 @@ def test_delete_teacher_not_found(client: TestClient, token: str):
     assert response.json() == {"detail": "Teacher not found"}
 
 
-def test_update_teacher(client: TestClient, token: str, teacher: dict):
+def test_update_teacher(client: TestClient, teacher: dict):
     """Test updating a teacher."""
     update_response = client.put(
         f"/teacher/{teacher['id']}",
