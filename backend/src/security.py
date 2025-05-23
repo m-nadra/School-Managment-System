@@ -5,11 +5,29 @@ from os import getenv
 from .database import SessionDep, User
 from fastapi import HTTPException, Cookie
 from sqlmodel import select
+from argon2 import PasswordHasher
+from argon2.exceptions import VerifyMismatchError
 import jwt
 
 SECRET_KEY = getenv("SECRET_KEY", "5974ba32fd3279e9d287a9f3926ebf4fa0d153c27775453e31af792afc1a95e0")
 ALGORITHM = getenv("ALGORITHM", "HS256")
 TOKEN_EXPIRE_MINUTES = int(getenv("TOKEN_EXPIRE_MINUTES", 30))
+
+ph = PasswordHasher()
+
+
+def check_if_hash_valid(hashed_password: str, password: str) -> bool:
+    """Check if the hashed password matches the provided password."""
+    try:
+        ph.verify(hashed_password, password)
+        return True
+    except VerifyMismatchError:
+        return False
+
+
+def hash_password(password: str) -> str:
+    """Hash the password using Argon2."""
+    return ph.hash(password)
 
 
 async def get_current_user(session: SessionDep, token: Annotated[str | None, Cookie()] = None) -> User:

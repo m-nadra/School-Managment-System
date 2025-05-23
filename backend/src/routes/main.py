@@ -4,20 +4,18 @@ from ..database import createTables, User, SessionDep, Teacher, Roles
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware
-from ..security import create_access_token, UserDep
+from ..security import create_access_token, UserDep, check_if_hash_valid
 from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
 from sqlmodel import select
-from argon2 import PasswordHasher
-from argon2.exceptions import VerifyMismatchError
 from fastapi.responses import Response
-from pydantic import BaseModel
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     createTables()
     yield
+
 
 app = FastAPI(lifespan=lifespan)
 app.include_router(teacher)
@@ -33,19 +31,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-ph = PasswordHasher()
-
 
 @app.get("/")
 async def root():
     return {"message": "Hello World!"}
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
 
 @app.post("/token")
-async def login(session: SessionDep, response: Response, form_data: OAuth2PasswordRequestForm = Depends()) -> Token:
+async def login(session: SessionDep, response: Response, form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)
     user = session.exec(query).first()
@@ -54,9 +47,7 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
             status_code=401,
             detail="User not found",
         )
-    try:
-        ph.verify(user.password, form_data.password)
-    except VerifyMismatchError:
+    if not check_if_hash_valid(user.password, form_data.password):
         raise HTTPException(
             status_code=401,
             detail="Invalid password",
@@ -72,10 +63,7 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
         secure=False,
         expires=60 * 30,
     )
-    return Token(
-        access_token=token,
-        token_type="bearer",
-    )
+    return {"message": "Logged in successfully"}
 
 
 @app.get("/me")
