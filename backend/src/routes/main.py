@@ -63,7 +63,7 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
         secure=False,
         expires=60 * 30,
     )
-    return {"message": "Logged in successfully"}
+    return {"username": f"{user.username}", "role": f"{user.role.value}"}
 
 
 @app.get("/me")

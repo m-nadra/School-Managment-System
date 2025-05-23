@@ -39,12 +39,14 @@ export default function Login() {
                 password: password,
             }),
         });
-    
+        const responseData = await response.json();
+
         if (response.ok) {
+            sessionStorage.setItem("username", responseData['username']);
+            sessionStorage.setItem("role", responseData['role']);
             navigate("/dashboard");
         } else {
-            const errorData = await response.json();
-            setErrorMessage(errorData['detail'] || "Login failed");
+            setErrorMessage(responseData['detail'] || "Login failed");
         }
     };
 
