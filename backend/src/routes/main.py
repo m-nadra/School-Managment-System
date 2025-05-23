@@ -67,22 +67,17 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
 
 
 @app.get("/me")
-async def read_user_profile(session: SessionDep, current_user: UserDep) -> dict:
+async def read_user_profile(session: SessionDep, current_user: UserDep):
     """Returns the current user profile."""
-    personal_data = None
     match current_user.role:
         case Roles.ADMIN:
             pass
         case Roles.TEACHER:
-            personal_data = session.get(Teacher, current_user.teacher.id)
+            return session.get(Teacher, current_user.teacher.id)
         case Roles.STUDENT:
             pass
         case Roles.SECRETARY:
             pass
-    return {
-        "account_data": current_user,
-        "personal_data": personal_data,
-    }
 
 
 @app.post("/logout")

@@ -19,4 +19,4 @@ def test_token_create_invalid_user(client: TestClient):
 def test_me(client: TestClient, token: str):
     response = client.get("/me")
     assert response.status_code == 200
-    assert response.json()["account_data"]["username"] == "testuser"
+    assert response.json() is None

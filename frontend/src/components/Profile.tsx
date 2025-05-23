@@ -5,54 +5,54 @@ import {
     Button
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import ChangePassword from "@/components/ChangePassword";
 
-type Profile = {
-    account_data: AccountData;
-    personal_data: PersonalData | null;
-}
 
-type AccountData = {
-    id: number;
-    username: string;
-    role: string; 
-}   
-
-type PersonalData = {
+type User = {
     id: number;
     firstname: string;
     secondname: string | null;
     lastname: string;
     email: string;
+    user_id: number;
 }
 
 export default function Profile() {
-    const [user, setUser] = useState<Profile>();
+    const [user, setUser] = useState<User>();
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
+    const navigate = useNavigate();
+    const username = sessionStorage.getItem("username");
+    const role = sessionStorage.getItem("role");
     useEffect(() => {
         fetch(`${apiUrl}/me`, {
             method: "GET",
             credentials: "include",
         })
-        .then((response) => response.json())
-        .then((data) => setUser(data))
+        .then(async response => {
+            if (!response.ok) {
+                navigate("/login");
+                sessionStorage.clear();
+            }
+            setUser(await response.json());
+        })
     }, []);
 
     return (
         <Flex justifyContent="space-around" align="center" w="85%">
             <Flex direction="column" alignItems="center" gap={4} h="100vh" w="50%" justify="center">
                 <Heading>Account</Heading>
-                <Text>Username: {user?.account_data.username}</Text>
-                <Text>Role: {user?.account_data.role}</Text>
+                <Text>Username: {username}</Text>
+                <Text>Role: {role}</Text>
                 <ChangePassword/>
             </Flex>
-            {user?.account_data.role === "teacher" && <>
+            {role === "teacher" && <>
                 <Flex direction="column" alignItems="center" gap={4} w="50%" h="100vh" justify="center">
                     <Heading>Personal data</Heading>
-                        <Text>Firstname: {user?.personal_data ? user.personal_data.firstname : ""}</Text>
-                        <Text>Secondname: {user?.personal_data ? user.personal_data.secondname : ""}</Text>
-                        <Text>Lastname: {user?.personal_data ? user.personal_data.lastname : ""}</Text>
-                        <Text>Email: {user?.personal_data ? user.personal_data.email : ""}</Text>
+                        <Text>Firstname: {user?.firstname}</Text>
+                        <Text>Secondname: {user?.secondname}</Text>
+                        <Text>Lastname: {user?.lastname}</Text>
+                        <Text>Email: {user?.email}</Text>
                     <Button>Edit data</Button>
                 </Flex>
             </>}

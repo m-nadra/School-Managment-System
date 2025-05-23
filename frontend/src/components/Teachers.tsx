@@ -20,14 +20,15 @@ export default function Teachers() {
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
     useEffect(() => {
-        fetch(`${apiUrl}/teacher`, {
+        fetch(`${apiUrl}/teacher/`, {
             method: "GET",
             credentials: "include"
         })
         .then(async response => {
-            if (!response.ok) 
+            if (!response.ok) {
                 navigate("/login");
-            
+                sessionStorage.clear();
+            }
             setTeachers(await response.json());
         })
     }, []);

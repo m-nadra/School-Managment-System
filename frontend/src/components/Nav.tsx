@@ -35,6 +35,7 @@ export default function Nav() {
         const role = sessionStorage.getItem("role");
         if (!username || !role) {
             navigate("/login");
+            sessionStorage.clear();
         }
         setUser(username || "");
         setRole(role || "");
