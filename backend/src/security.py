@@ -9,7 +9,9 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import jwt
 
-SECRET_KEY = getenv("SECRET_KEY", "5974ba32fd3279e9d287a9f3926ebf4fa0d153c27775453e31af792afc1a95e0")
+SECRET_KEY = getenv(
+    "SECRET_KEY", "5974ba32fd3279e9d287a9f3926ebf4fa0d153c27775453e31af792afc1a95e0"
+)
 ALGORITHM = getenv("ALGORITHM", "HS256")
 TOKEN_EXPIRE_MINUTES = int(getenv("TOKEN_EXPIRE_MINUTES", 30))
 
@@ -30,7 +32,9 @@ def hash_password(password: str) -> str:
     return ph.hash(password)
 
 
-async def get_current_user(session: SessionDep, token: Annotated[str | None, Cookie()] = None) -> User:
+async def get_current_user(
+    session: SessionDep, token: Annotated[str | None, Cookie()] = None
+) -> User:
     """Get the current user from the token."""
     if token is None:
         raise HTTPException(
@@ -74,5 +78,5 @@ def decode_access_token(token: str) -> str:
             detail="Invalid token",
         )
 
-    
+
 UserDep = Annotated[User, Depends(get_current_user)]

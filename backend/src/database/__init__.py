@@ -21,11 +21,11 @@ class Roles(str, enum.Enum):
 
 class Teacher(Base, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    firstname: str = Field(max_length=20 , nullable=False)
-    secondname: Optional[str] = Field(max_length=20 , nullable=True)
+    firstname: str = Field(max_length=20, nullable=False)
+    secondname: Optional[str] = Field(max_length=20, nullable=True)
     lastname: str = Field(max_length=30, nullable=False)
-    email: str = Field(max_length=40 , nullable=False, unique=True)
-    user_id: Optional[int] = Field(foreign_key="user.id")
+    email: str = Field(max_length=40, nullable=False, unique=True)
+    user_id: int = Field(foreign_key="user.id")
     user: "User" = Relationship(back_populates="teacher")
 
 

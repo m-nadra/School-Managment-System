@@ -1,16 +1,19 @@
 """Database connection and session management for FastAPI"""
 
 from sqlmodel import SQLModel, create_engine, Session
-from typing import Annotated
+from typing import Annotated, Iterator
 from fastapi import Depends
 
 engine = create_engine("sqlite:///database.db")
 
-def createTables():
+
+def createTables() -> None:
     SQLModel.metadata.create_all(engine)
 
-def getSession():
+
+def getSession() -> Iterator[Session]:
     with Session(engine) as session:
         yield session
+
 
 SessionDep = Annotated[Session, Depends(getSession)]

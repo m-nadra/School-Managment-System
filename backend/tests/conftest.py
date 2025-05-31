@@ -6,10 +6,11 @@ from src.routes.main import app
 from fastapi.testclient import TestClient
 from src.database import User
 from argon2 import PasswordHasher
+from typing import Generator
 
 
 @pytest.fixture(name="session")
-def session_fixture():
+def session_fixture() -> Generator[Session, None, None]:
     engine = create_engine(
         "sqlite://", connect_args={"check_same_thread": False}, poolclass=StaticPool
     )
@@ -18,24 +19,28 @@ def session_fixture():
         yield session
 
 
-@pytest.fixture(name="client")  
-def client_fixture(session: Session):  
-    def getSessionTestDatabase():  
+@pytest.fixture(name="client")
+def client_fixture(session: Session) -> Generator[TestClient, None, None]:
+    def getSessionTestDatabase() -> Session:
         return session
 
     app.dependency_overrides[getSession] = getSessionTestDatabase
-    
+
     ph = PasswordHasher()
     hashed_password = ph.hash("testpassword")
     test_user = User(username="testuser", password=hashed_password, role="admin")
     session.add(test_user)
     session.commit()
-    
+
     client = TestClient(app)
-    yield client  
-    app.dependency_overrides.clear()  
+    yield client
+    app.dependency_overrides.clear()
+
 
 @pytest.fixture
-def token(client: TestClient):
-    response = client.post("/token", data={"username": "testuser", "password": "testpassword", "role": "admin"})
+def token(client: TestClient) -> None:
+    response = client.post(
+        "/token",
+        data={"username": "testuser", "password": "testpassword", "role": "admin"},
+    )
     assert response.status_code == 200

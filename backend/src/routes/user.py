@@ -5,12 +5,13 @@ from ..database import SessionDep, User
 from sqlmodel import select
 from ..security import UserDep, hash_password, check_if_hash_valid
 from pydantic import BaseModel
+from typing import Sequence
 
 router = APIRouter(prefix="/user", tags=["user"])
 
 
 @router.get("/")
-async def get_all_users(session: SessionDep) -> list[User]:
+async def get_all_users(session: SessionDep) -> Sequence[User]:
     """Return all users."""
     return session.exec(select(User)).all()
 
@@ -65,7 +66,9 @@ class ChangePasswordBody(BaseModel):
 
 
 @router.post("/change_password")
-async def change_password(body: ChangePasswordBody, session: SessionDep, current_user: UserDep) -> dict:
+async def change_password(
+    body: ChangePasswordBody, session: SessionDep, current_user: UserDep
+) -> dict:
     """Change the password of a user."""
     if not check_if_hash_valid(current_user.password, body.old_password):
         raise HTTPException(status_code=401, detail="Old password is incorrect")

@@ -9,10 +9,11 @@ from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
 from sqlmodel import select
 from fastapi.responses import Response
+from typing import Annotated, AsyncIterator
 
 
 @asynccontextmanager
-async def lifespan(app: FastAPI):
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     createTables()
     yield
 
@@ -22,7 +23,7 @@ app.include_router(teacher)
 app.include_router(user)
 app.mount("/metrics", make_asgi_app(), name="metrics")
 
-FRONTEND_URL : str = getenv("FRONTEND_URL", "http://localhost:5173")
+FRONTEND_URL: str = getenv("FRONTEND_URL", "http://localhost:5173")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[FRONTEND_URL],
@@ -33,12 +34,16 @@ app.add_middleware(
 
 
 @app.get("/")
-async def root():
+async def root() -> dict:
     return {"message": "Hello World!"}
 
 
 @app.post("/token")
-async def login(session: SessionDep, response: Response, form_data: OAuth2PasswordRequestForm = Depends()) -> dict:
+async def login(
+    session: SessionDep,
+    response: Response,
+    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+) -> dict:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)
     user = session.exec(query).first()
@@ -52,9 +57,7 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
             status_code=401,
             detail="Invalid password",
         )
-    token = create_access_token(
-        data={"sub": form_data.username}
-    )
+    token = create_access_token(data={"sub": form_data.username})
     response.set_cookie(
         key="token",
         value=token,
@@ -67,17 +70,27 @@ async def login(session: SessionDep, response: Response, form_data: OAuth2Passwo
 
 
 @app.get("/me")
-async def read_user_profile(session: SessionDep, current_user: UserDep):
+async def read_user_profile(
+    session: SessionDep, current_user: UserDep
+) -> Teacher | None:
     """Returns the current user profile."""
     match current_user.role:
         case Roles.ADMIN:
             pass
         case Roles.TEACHER:
-            return session.get(Teacher, current_user.teacher.id)
+            query = select(Teacher).where(Teacher.user_id == current_user.id)
+            teacher = session.exec(query).first()
+            if not teacher:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Teacher not found",
+                )
+            return teacher
         case Roles.STUDENT:
             pass
         case Roles.SECRETARY:
             pass
+    return None
 
 
 @app.post("/logout")
