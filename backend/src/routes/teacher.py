@@ -64,8 +64,8 @@ async def delete_teacher(
     teacher = session.get(Teacher, teacher_id)
     if not teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")
-    await delete_user(teacher.user_id, session)
     session.delete(teacher)
+    await delete_user(teacher.user_id, session)
     session.commit()
     return {"message": "Teacher deleted successfully"}
 
