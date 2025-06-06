@@ -4,15 +4,18 @@ import {
     IconButton,
     Input,
     InputGroup,
+    Stat,
+    Heading
 } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
     LuSearch, 
     LuPenLine,
-    LuUserRoundPlus,
     LuTrash2 
 } from "react-icons/lu";
+import AddTeacherButton from "./AddTeacher";
+
 
 type Teacher = {
     id: number;
@@ -25,6 +28,7 @@ type Teacher = {
 
 export default function Teachers() {
     const [teachers, setTeachers] = useState<Array<Teacher>>([]);
+    const [teachersCount, setTeachersCount] = useState(0);
     const navigate = useNavigate();
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
@@ -38,20 +42,28 @@ export default function Teachers() {
                 navigate("/login");
                 sessionStorage.clear();
             }
-            setTeachers(await response.json());
+            const teachers = await response.json();
+            setTeachers(teachers);
+            setTeachersCount(teachers.length);
         })
     }, []);
 
     return (
-        <Flex width="85%" direction="column" margin="1rem" gap="1rem">
-            <Flex direction="row">
-                <InputGroup flex="1" startElement={<LuSearch />}>
+        <Flex w="85%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
+            <Flex direction="row" justifyContent="space-between" align="center">
+                <Heading size="2xl">Teachers</Heading>
+                <Stat.Root display="flex" alignItems="flex-end">
+                    <Stat.Label>Teachers in database</Stat.Label>
+                    <Stat.ValueText>{teachersCount}</Stat.ValueText>
+                </Stat.Root>
+            </Flex>
+            <Flex direction="row" justify="flex-end" align="center">
+                <InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
                     <Input placeholder="Search in teachers"/>
                 </InputGroup>
-                <IconButton padding="0.5rem">
-                    <LuUserRoundPlus/> Add teacher
-                </IconButton>
+                <AddTeacherButton />
             </Flex>
+            <Flex>
             <Table.Root stickyHeader interactive variant="outline" rounded="md">
                 <Table.Header>
                     <Table.Row>
@@ -77,6 +89,7 @@ export default function Teachers() {
                     ))}
                 </Table.Body>
             </Table.Root>
+            </Flex>
         </Flex>
     );
 }

@@ -41,7 +41,7 @@ export default function Nav() {
         setRole(role || "");
     }, []);
     return (
-        <Flex bg={useColorModeValue("gray.100", "gray.900")} width="15%" height="100vh" flexDirection="column" gap="1" justify="start">
+        <Flex bg={useColorModeValue("gray.100", "gray.900")} flexDirection="column" gap="1" justify="start" w="15%">
             <IconButton onClick={toggleColorMode} variant="ghost" size="md">
                 {colorMode === "light" ? <LuSun /> : <LuMoon />}
             </IconButton>
