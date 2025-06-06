@@ -6,7 +6,7 @@ import { Outlet } from "react-router-dom";
 
 export default function Dashboard() {
     return (
-        <Flex width="100%" height="100vh">
+        <Flex>
             <Nav />
             <Outlet />
         </Flex>
