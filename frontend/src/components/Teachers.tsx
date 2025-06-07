@@ -59,12 +59,12 @@ export default function Teachers() {
             </Flex>
             <Flex direction="row" justify="flex-end" align="center">
                 <InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
-                    <Input placeholder="Search in teachers"/>
+                    <Input id="searchInput" placeholder="Search in teachers" onChange={searchInTable}/>
                 </InputGroup>
                 <AddTeacherButton />
             </Flex>
             <Flex>
-            <Table.Root stickyHeader interactive variant="outline" rounded="md">
+            <Table.Root id="table" stickyHeader interactive variant="outline" rounded="md">
                 <Table.Header>
                     <Table.Row>
                         <Table.ColumnHeader>First Name</Table.ColumnHeader>
@@ -92,4 +92,27 @@ export default function Teachers() {
             </Flex>
         </Flex>
     );
+}
+
+function searchInTable() {
+    const input = document.getElementById("searchInput") as HTMLInputElement;
+    const filter = input.value.toUpperCase();
+    const table = document.getElementById("table") as HTMLTableElement;
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 0; i < tr.length; i++) {
+        const tds = tr[i].getElementsByTagName("td");
+        let rowMatches = false;
+        for (let j = 0; j < tds.length; j++) {
+            const td = tds[j];
+            if (td) {
+                const txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    rowMatches = true;
+                    break;
+                }
+            }
+        }
+        tr[i].style.display = rowMatches || tds.length === 0 ? "" : "none";
+    }
 }
