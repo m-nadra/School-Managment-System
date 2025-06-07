@@ -1,7 +1,6 @@
 import { 
     Table,
     Flex,
-    IconButton,
     Input,
     InputGroup,
     Stat,
@@ -11,10 +10,9 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { 
     LuSearch, 
-    LuPenLine,
-    LuTrash2 
 } from "react-icons/lu";
 import AddTeacherButton from "./AddTeacher";
+import TeacherOptions from "./TeacherOptions";
 
 
 type Teacher = {
@@ -29,6 +27,7 @@ type Teacher = {
 export default function Teachers() {
     const [teachers, setTeachers] = useState<Array<Teacher>>([]);
     const [teachersCount, setTeachersCount] = useState(0);
+    const [checkedTeacher, setCheckedTeacher] = useState(0);
     const navigate = useNavigate();
     const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
@@ -71,20 +70,19 @@ export default function Teachers() {
                         <Table.ColumnHeader>Second Name</Table.ColumnHeader>
                         <Table.ColumnHeader>Last Name</Table.ColumnHeader>
                         <Table.ColumnHeader>Email</Table.ColumnHeader>
-                        <Table.ColumnHeader>Options</Table.ColumnHeader>
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
                     {teachers.map((teacher) => (
-                        <Table.Row key={teacher.id} >
+                        <Table.Row
+                            key={teacher.id}
+                            onClick={() => setCheckedTeacher(checkedTeacher === teacher.id ? 0 : teacher.id)}
+                        >
                             <Table.Cell>{teacher.firstname}</Table.Cell>
                             <Table.Cell>{teacher.secondname}</Table.Cell>
                             <Table.Cell>{teacher.lastname}</Table.Cell>
                             <Table.Cell>{teacher.email}</Table.Cell>
-                            <Table.Cell margin="0.5rem">
-                                <IconButton><LuPenLine/></IconButton>
-                                <IconButton colorPalette="red"><LuTrash2/></IconButton>
-                            </Table.Cell>
+                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
                         </Table.Row>
                     ))}
                 </Table.Body>
