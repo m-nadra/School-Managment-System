@@ -1,5 +1,6 @@
 import { ActionBar, Button, Portal, CloseButton } from "@chakra-ui/react"
-import { LuPen, LuTrash2 } from "react-icons/lu"
+import { LuPen } from "react-icons/lu"
+import DeleteTeacher from "./DeleteTeacher";
 import { useState, useEffect } from "react";
 
 type TeacherOptionsProps = {
@@ -42,10 +43,7 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
                     <LuPen />
                     Edit
                 </Button>
-                <Button variant="outline" size="sm">
-                    <LuTrash2 />
-                    Delete
-                </Button>
+                    <DeleteTeacher teacherId={teacher.id}/>
                 <ActionBar.CloseTrigger asChild>
                     <CloseButton size="sm" />
                 </ActionBar.CloseTrigger>
