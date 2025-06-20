@@ -1,7 +1,7 @@
 """This file contains the database models for the application."""
 
 from sqlmodel import SQLModel, Field, Relationship, Enum
-from .database import SessionDep, createTables
+from .core import SessionDep, createTables
 from typing import Optional
 import enum
 
