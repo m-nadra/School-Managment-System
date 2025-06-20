@@ -27,7 +27,6 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
     }, [props.isChecked]);
 
     return (
-        <>
         <ActionBar.Root
             open={open}
             onOpenChange={(details: { open: boolean }) => setOpen(details.open)}
@@ -39,7 +38,7 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
                     {teacher.firstname} {teacher.lastname}
                 </ActionBar.SelectionTrigger>
                 <ActionBar.Separator />
-                    <EditTeacher teacherId={teacher.id}/>
+                    <EditTeacher {...teacher} />
                     <DeleteTeacher teacherId={teacher.id}/>
                 <ActionBar.CloseTrigger asChild>
                     <CloseButton size="sm" />
@@ -48,6 +47,5 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
             </ActionBar.Positioner>
             </Portal>
         </ActionBar.Root>
-        </>
     )
 }
