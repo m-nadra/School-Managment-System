@@ -1,15 +1,11 @@
-from fastapi import FastAPI, Depends, HTTPException
-from . import teacher, user
-from ..database import createTables, User, SessionDep, Teacher, Roles
+from fastapi import FastAPI
+from . import teacher, user, auth
+from ..database import createTables
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware
-from ..security import create_access_token, UserDep, check_if_hash_valid
-from fastapi.security import OAuth2PasswordRequestForm
 from os import getenv
-from sqlmodel import select
-from fastapi.responses import Response
-from typing import Annotated, AsyncIterator
+from typing import AsyncIterator
 
 
 @asynccontextmanager
@@ -19,6 +15,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(auth)
 app.include_router(teacher)
 app.include_router(user)
 app.mount("/metrics", make_asgi_app(), name="metrics")
@@ -31,70 +28,3 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-
-@app.get("/")
-async def root() -> dict:
-    return {"message": "Hello World!"}
-
-
-@app.post("/token")
-async def login(
-    session: SessionDep,
-    response: Response,
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> dict:
-    """Generates a JWT token for the user if user exists and password is correct."""
-    query = select(User).where(User.username == form_data.username)
-    user = session.exec(query).first()
-    if not user:
-        raise HTTPException(
-            status_code=401,
-            detail="User not found",
-        )
-    if not check_if_hash_valid(user.password, form_data.password):
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid password",
-        )
-    token = create_access_token(data={"sub": form_data.username})
-    response.set_cookie(
-        key="token",
-        value=token,
-        httponly=True,
-        samesite="lax",
-        secure=False,
-        expires=60 * 30,
-    )
-    return {"username": f"{user.username}", "role": f"{user.role.value}"}
-
-
-@app.get("/me")
-async def read_user_profile(
-    session: SessionDep, current_user: UserDep
-) -> Teacher | None:
-    """Returns the current user profile."""
-    match current_user.role:
-        case Roles.ADMIN:
-            pass
-        case Roles.TEACHER:
-            query = select(Teacher).where(Teacher.user_id == current_user.id)
-            teacher = session.exec(query).first()
-            if not teacher:
-                raise HTTPException(
-                    status_code=404,
-                    detail="Teacher not found",
-                )
-            return teacher
-        case Roles.STUDENT:
-            pass
-        case Roles.SECRETARY:
-            pass
-    return None
-
-
-@app.post("/logout")
-async def logout(response: Response) -> dict:
-    """Logs out the user by deleting the JWT token."""
-    response.delete_cookie(key="token")
-    return {"message": "Logged out successfully"}

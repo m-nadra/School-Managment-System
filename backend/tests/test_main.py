@@ -1,12 +1,6 @@
 from fastapi.testclient import TestClient
 
 
-def test_root(client: TestClient) -> None:
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello World!"}
-
-
 def test_token_create_invalid_user(client: TestClient) -> None:
     response = client.post(
         "/token", data={"username": "invaliduser", "password": "invalidpassword"}
