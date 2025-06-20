@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from .routes import teacher, user, auth
+from .api import include_routers
 from .database import createTables
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
@@ -15,9 +15,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
 
 app = FastAPI(lifespan=lifespan)
-app.include_router(auth)
-app.include_router(teacher)
-app.include_router(user)
+include_routers(app)
 app.mount("/metrics", make_asgi_app(), name="metrics")
 
 FRONTEND_URL: str = getenv("FRONTEND_URL", "http://localhost:5173")

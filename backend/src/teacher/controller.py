@@ -3,7 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from ..database import SessionDep, Teacher, User, Roles
 from sqlmodel import select
-from .user import add_user, delete_user
+from ..user.controller import add_user, delete_user
 from ..security import UserDep
 from typing import Sequence
 
