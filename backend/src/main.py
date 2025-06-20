@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from . import teacher, user, auth
-from ..database import createTables
+from .routes import teacher, user, auth
+from .database import createTables
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware

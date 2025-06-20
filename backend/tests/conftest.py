@@ -2,7 +2,7 @@ import pytest
 from sqlmodel import create_engine, SQLModel, Session
 from sqlmodel.pool import StaticPool
 from src.database.database import getSession
-from src.routes.main import app
+from src.main import app
 from fastapi.testclient import TestClient
 from src.database import User
 from argon2 import PasswordHasher
