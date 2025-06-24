@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .auth.controller import router as auth
-from .user.controller import router as user
+from .user.routes import router as user
 from .teacher.controller import router as teacher
 
 

@@ -3,7 +3,7 @@
 from fastapi import APIRouter, HTTPException
 from ..database import SessionDep, Teacher, User, Roles
 from sqlmodel import select
-from ..user.controller import add_user, delete_user
+from ..user.service import add_user, delete_user
 from ..security import UserDep
 from typing import Sequence
 
@@ -30,7 +30,7 @@ async def add_teacher(
         password="password",
         role=Roles.TEACHER,
     )
-    await add_user(user, session)
+    add_user(user, session)
     session.refresh(user)
     if user.id is None:
         raise HTTPException(status_code=500, detail="Failed to create user account")
@@ -65,7 +65,7 @@ async def delete_teacher(
     if not teacher:
         raise HTTPException(status_code=404, detail="Teacher not found")
     session.delete(teacher)
-    await delete_user(teacher.user_id, session)
+    delete_user(teacher.user_id, session)
     session.commit()
     return {"message": "Teacher deleted successfully"}
 
