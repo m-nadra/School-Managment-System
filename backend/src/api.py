@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from .auth.controller import router as auth
 from .user.routes import router as user
-from .teacher.controller import router as teacher
+from .teacher.routes import router as teacher
 
 
 def include_routers(app: FastAPI) -> None:

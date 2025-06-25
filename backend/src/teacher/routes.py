@@ -10,7 +10,7 @@ from src import exceptions
 router = APIRouter(prefix="/teacher", tags=["teacher"])
 
 
-@router.get("/")
+@router.get("/", status_code=200)
 async def get_all_teachers(
     session: SessionDep, current_user: UserDep
 ) -> Sequence[Teacher]:
@@ -18,7 +18,18 @@ async def get_all_teachers(
     return service.get_all_teachers(session)
 
 
-@router.post("/")
+@router.get("/{teacher_id}", status_code=200)
+async def get_teacher(
+    teacher_id: int, session: SessionDep, current_user: UserDep
+) -> Teacher:
+    """Return a teacher by ID."""
+    try:
+        return service.get_teacher_by_id(teacher_id, session)
+    except exceptions.TeacherNotFoundError:
+        raise HTTPException(status_code=404, detail="Teacher not found")
+
+
+@router.post("/", status_code=201)
 async def add_teacher(
     teacher: Teacher, session: SessionDep, current_user: UserDep
 ) -> Teacher:
@@ -33,21 +44,10 @@ async def add_teacher(
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@router.get("/{teacher_id}")
-async def get_teacher(
-    teacher_id: int, session: SessionDep, current_user: UserDep
-) -> Teacher:
-    """Return a teacher by ID."""
-    try:
-        return service.get_teacher_by_id(teacher_id, session)
-    except exceptions.TeacherNotFoundError:
-        raise HTTPException(status_code=404, detail="Teacher not found")
-
-
-@router.delete("/{teacher_id}")
+@router.delete("/{teacher_id}", status_code=204)
 async def delete_teacher(
     teacher_id: int, session: SessionDep, current_user: UserDep
-) -> dict:
+) -> None:
     """Delete a teacher by ID."""
     if current_user.role not in [Roles.ADMIN, Roles.SECRETARY]:
         raise HTTPException(
@@ -57,17 +57,16 @@ async def delete_teacher(
         service.delete_teacher(teacher_id, session)
     except exceptions.TeacherNotFoundError:
         raise HTTPException(status_code=404, detail="Teacher not found")
-    return {"message": "Teacher deleted successfully"}
 
 
-@router.put("/{teacher_id}")
+@router.put("/{teacher_id}", status_code=204)
 async def update_teacher(
     teacher_id: int, teacherNewData: Teacher, session: SessionDep, current_user: UserDep
-) -> Teacher:
+) -> None:
     """Update a teacher by ID and return it as a response."""
     if current_user.role == Roles.STUDENT:
         raise HTTPException(
-            status_code=405, detail="You are not allowed to update a teacher"
+            status_code=403, detail="You are not allowed to update a teacher"
         )
     try:
         teacherToUpdate = service.get_teacher_by_id(teacher_id, session)
@@ -78,6 +77,6 @@ async def update_teacher(
         and current_user.role == Roles.TEACHER
     ):
         raise HTTPException(
-            status_code=405, detail="You can only update your own teacher profile"
+            status_code=403, detail="You can only update your own teacher profile"
         )
-    return service.update_teacher(teacherToUpdate, teacherNewData, session)
+    service.update_teacher(teacherToUpdate, teacherNewData, session)
