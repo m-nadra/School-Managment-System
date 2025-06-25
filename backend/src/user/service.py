@@ -2,7 +2,7 @@ from ..database import SessionDep, User
 from sqlmodel import select
 from typing import Sequence
 from ..security import hash_password, check_if_hash_valid
-from src.exceptions import UserNotFoundError, InvalidPassword
+from src.exceptions import UserNotFoundError, UserAlreadyExistsError, InvalidPassword
 from . import model
 
 
@@ -22,10 +22,15 @@ def get_user_by_id(user_id: int, session: SessionDep) -> User:
 def add_user(user: User, session: SessionDep) -> User:
     """Add a new user and return created user as a response."""
     user.password = hash_password(user.password)
-    session.add(user)
-    session.commit()
-    session.refresh(user)
-    return user
+    try:
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
+    except Exception:
+        raise UserAlreadyExistsError(
+            f"User with username {user.username} already exists"
+        )
 
 
 def delete_user(user_id: int, session: SessionDep) -> None:
