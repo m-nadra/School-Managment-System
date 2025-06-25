@@ -42,14 +42,15 @@ def delete_user(user_id: int, session: SessionDep) -> None:
     session.commit()
 
 
-def update_user(oldUserData: User, newUserData: User, session: SessionDep) -> User:
+def update_user(user_id: int, newUserData: User, session: SessionDep) -> None:
     """Update a user by ID and return it as a response."""
-    oldUserData.username = newUserData.username
-    oldUserData.password = hash_password(newUserData.password)
-    oldUserData.role = newUserData.role
+    user = session.get(User, user_id)
+    if not user:
+        raise UserNotFoundError("There is no user with this ID.")
+    user.username = newUserData.username
+    user.password = hash_password(newUserData.password)
+    user.role = newUserData.role
     session.commit()
-    session.refresh(oldUserData)
-    return oldUserData
 
 
 def change_password(

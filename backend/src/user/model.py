@@ -11,11 +11,3 @@ class User(BaseModel):
 class ChangePasswordBody(BaseModel):
     old_password: str
     new_password: str
-
-
-class ChangePasswordResponse(BaseModel):
-    message: str
-
-
-class DeleteUserResponse(BaseModel):
-    message: str
