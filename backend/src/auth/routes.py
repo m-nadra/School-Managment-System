@@ -4,17 +4,17 @@ from sqlmodel import select
 from typing import Annotated
 from ..database import SessionDep, User, Teacher, Roles
 from ..security import create_access_token, UserDep, check_if_hash_valid
-
+from . import model
 
 router = APIRouter(tags=["auth"])
 
 
-@router.post("/token")
+@router.post("/token", status_code=200)
 async def login(
     session: SessionDep,
     response: Response,
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> dict:
+) -> model.LoginResponse:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)
     user = session.exec(query).first()
@@ -37,10 +37,13 @@ async def login(
         secure=False,
         expires=60 * 30,
     )
-    return {"username": f"{user.username}", "role": f"{user.role.value}"}
+    return model.LoginResponse(
+        username=user.username,
+        role=user.role,
+    )
 
 
-@router.get("/me")
+@router.get("/me", status_code=200)
 async def read_user_profile(
     session: SessionDep, current_user: UserDep
 ) -> Teacher | None:
@@ -64,8 +67,7 @@ async def read_user_profile(
     return None
 
 
-@router.post("/logout")
-async def logout(response: Response) -> dict:
+@router.post("/logout", status_code=204)
+async def logout(response: Response) -> None:
     """Logs out the user by deleting the JWT token."""
     response.delete_cookie(key="token")
-    return {"message": "Logged out successfully"}
