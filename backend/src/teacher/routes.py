@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, HTTPException
 from ..database import SessionDep, Roles, Teacher
-from ..security import UserDep
+from ..auth.service import UserDep
 from typing import Sequence
 from . import service
 from src import exceptions

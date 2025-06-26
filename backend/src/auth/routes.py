@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Response
 from sqlmodel import select
 from ..database import SessionDep, User, Teacher, Roles
-from ..security import create_access_token, UserDep, check_if_hash_valid
+from .service import create_access_token, UserDep, check_if_hash_valid
 from . import model
 
 router = APIRouter(tags=["auth"])

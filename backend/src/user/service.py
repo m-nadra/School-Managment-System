@@ -1,7 +1,7 @@
 from ..database import SessionDep, User
 from sqlmodel import select
 from typing import Sequence
-from ..security import hash_password, check_if_hash_valid
+from ..auth.service import hash_password, check_if_hash_valid
 from src.exceptions import UserNotFoundError, UserAlreadyExistsError, InvalidPassword
 from . import model
 
