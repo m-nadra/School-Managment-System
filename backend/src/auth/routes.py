@@ -1,7 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, Response
-from fastapi.security import OAuth2PasswordRequestForm
+from fastapi import APIRouter, HTTPException, Response
 from sqlmodel import select
-from typing import Annotated
 from ..database import SessionDep, User, Teacher, Roles
 from ..security import create_access_token, UserDep, check_if_hash_valid
 from . import model
@@ -13,7 +11,7 @@ router = APIRouter(tags=["auth"])
 async def login(
     session: SessionDep,
     response: Response,
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    form_data: model.AuthData,
 ) -> model.LoginResponse:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)

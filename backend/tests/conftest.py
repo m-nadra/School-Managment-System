@@ -41,6 +41,6 @@ def client_fixture(session: Session) -> Generator[TestClient, None, None]:
 def token(client: TestClient) -> None:
     response = client.post(
         "/token",
-        data={"username": "testuser", "password": "testpassword", "role": "admin"},
+        json={"username": "testuser", "password": "testpassword"},
     )
     assert response.status_code == 200

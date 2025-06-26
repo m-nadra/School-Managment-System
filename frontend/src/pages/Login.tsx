@@ -34,10 +34,13 @@ export default function Login() {
         const response = await fetch(`${apiUrl}/token`, {
             method: "POST",
             credentials: "include",
-            body: new URLSearchParams({
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
                 username: username,
                 password: password,
-            }),
+            })
         });
         const responseData = await response.json();
 
