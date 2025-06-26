@@ -15,7 +15,7 @@ def teacher(client: TestClient, token: str) -> Generator[dict, None, None]:
             "email": "jdoe@example.com",
         },
     )
-    assert teacher.status_code == 200
+    assert teacher.status_code == 201
     yield teacher.json()
 
 
@@ -43,7 +43,7 @@ def test_read_teacher(client: TestClient, teacher: dict) -> None:
             "email": "jsmi@example.com",
         },
     )
-    assert teacher2.status_code == 200
+    assert teacher2.status_code == 201
     response = client.get("/teacher")
     assert response.status_code == 200
     response = response.json()
@@ -61,7 +61,7 @@ def test_teacher_delete(client: TestClient, teacher: dict) -> None:
     assert user_exists_response.status_code == 200
 
     delete_response = client.delete(f"/teacher/{teacher['id']}")
-    assert delete_response.status_code == 200
+    assert delete_response.status_code == 204
 
     teacher_not_found_response = client.get(f"/teacher/{teacher['id']}")
     assert teacher_not_found_response.status_code == 404
@@ -89,8 +89,8 @@ def test_update_teacher(client: TestClient, teacher: dict) -> None:
             "email": "",
         },
     )
-    assert update_response.status_code == 200
-    updated_teacher = update_response.json()
+    assert update_response.status_code == 204
+    updated_teacher = client.get(f"/teacher/{teacher['id']}").json()
     assert updated_teacher["firstname"] == "Jane"
     assert updated_teacher["email"] == ""
 

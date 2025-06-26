@@ -3,6 +3,7 @@
 from sqlmodel import SQLModel, create_engine, Session
 from typing import Annotated, Iterator
 from fastapi import Depends
+from . import models  # noqa: F401
 
 engine = create_engine("sqlite:///database.db")
 
