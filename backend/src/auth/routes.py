@@ -1,49 +1,18 @@
-from fastapi import FastAPI, Depends, HTTPException
-from . import teacher, user
-from ..database import createTables, User, SessionDep, Teacher, Roles
-from contextlib import asynccontextmanager
-from prometheus_client import make_asgi_app
-from fastapi.middleware.cors import CORSMiddleware
-from ..security import create_access_token, UserDep, check_if_hash_valid
-from fastapi.security import OAuth2PasswordRequestForm
-from os import getenv
+from fastapi import APIRouter, HTTPException, Response
 from sqlmodel import select
-from fastapi.responses import Response
-from typing import Annotated, AsyncIterator
+from ..database import SessionDep, User, Teacher, Roles
+from .service import create_access_token, UserDep, check_if_hash_valid
+from . import model
+
+router = APIRouter(tags=["auth"])
 
 
-@asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncIterator[None]:
-    createTables()
-    yield
-
-
-app = FastAPI(lifespan=lifespan)
-app.include_router(teacher)
-app.include_router(user)
-app.mount("/metrics", make_asgi_app(), name="metrics")
-
-FRONTEND_URL: str = getenv("FRONTEND_URL", "http://localhost:5173")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[FRONTEND_URL],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-
-@app.get("/")
-async def root() -> dict:
-    return {"message": "Hello World!"}
-
-
-@app.post("/token")
+@router.post("/token", status_code=200)
 async def login(
     session: SessionDep,
     response: Response,
-    form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-) -> dict:
+    form_data: model.AuthData,
+) -> model.LoginResponse:
     """Generates a JWT token for the user if user exists and password is correct."""
     query = select(User).where(User.username == form_data.username)
     user = session.exec(query).first()
@@ -66,10 +35,13 @@ async def login(
         secure=False,
         expires=60 * 30,
     )
-    return {"username": f"{user.username}", "role": f"{user.role.value}"}
+    return model.LoginResponse(
+        username=user.username,
+        role=user.role,
+    )
 
 
-@app.get("/me")
+@router.get("/me", status_code=200)
 async def read_user_profile(
     session: SessionDep, current_user: UserDep
 ) -> Teacher | None:
@@ -93,8 +65,7 @@ async def read_user_profile(
     return None
 
 
-@app.post("/logout")
-async def logout(response: Response) -> dict:
+@router.post("/logout", status_code=204)
+async def logout(response: Response) -> None:
     """Logs out the user by deleting the JWT token."""
     response.delete_cookie(key="token")
-    return {"message": "Logged out successfully"}

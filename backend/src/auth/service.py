@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import Depends
 from datetime import datetime, timedelta, timezone
 from os import getenv
-from .database import SessionDep, User
+from ..database import SessionDep, User
 from fastapi import HTTPException, Cookie
 from sqlmodel import select
 from argon2 import PasswordHasher
