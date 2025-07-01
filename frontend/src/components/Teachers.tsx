@@ -13,7 +13,9 @@ import {
 } from "react-icons/lu";
 import AddTeacherButton from "./AddTeacher";
 import TeacherOptions from "./TeacherOptions";
+import { Toaster } from "./ui/toaster";
 
+const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
 type Teacher = {
     id: number;
@@ -28,8 +30,8 @@ export default function Teachers() {
     const [teachers, setTeachers] = useState<Array<Teacher>>([]);
     const [teachersCount, setTeachersCount] = useState(0);
     const [checkedTeacher, setCheckedTeacher] = useState(0);
+    const [reload, setReload] = useState(false);
     const navigate = useNavigate();
-    const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
     useEffect(() => {
         fetch(`${apiUrl}/teacher/`, {
@@ -37,15 +39,16 @@ export default function Teachers() {
             credentials: "include"
         })
         .then(async response => {
-            if (!response.ok) {
-                navigate("/login");
-                sessionStorage.clear();
-            }
             const teachers = await response.json();
             setTeachers(teachers);
             setTeachersCount(teachers.length);
-        })
-    }, []);
+        }).then(() => setReload(false))
+        .catch(error => {
+            console.error("Error fetching teachers:", error)
+            navigate("/login");
+            sessionStorage.clear();
+        });
+    }, [reload]);
 
     return (
         <Flex w="85%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
@@ -60,7 +63,7 @@ export default function Teachers() {
                 <InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
                     <Input id="searchInput" placeholder="Search in teachers" onChange={searchInTable}/>
                 </InputGroup>
-                <AddTeacherButton />
+                <AddTeacherButton reloadState={setReload}/>
             </Flex>
             <Flex>
             <Table.Root id="table" stickyHeader interactive variant="outline" rounded="md">
@@ -82,12 +85,13 @@ export default function Teachers() {
                             <Table.Cell>{teacher.secondname}</Table.Cell>
                             <Table.Cell>{teacher.lastname}</Table.Cell>
                             <Table.Cell>{teacher.email}</Table.Cell>
-                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
+                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} reloadState={setReload}/>
                         </Table.Row>
                     ))}
                 </Table.Body>
             </Table.Root>
             </Flex>
+            <Toaster />
         </Flex>
     );
 }

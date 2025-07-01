@@ -1,12 +1,8 @@
-import { ActionBar, Portal, CloseButton } from "@chakra-ui/react"
+import { ActionBar, Portal, CloseButton, Button, Text } from "@chakra-ui/react"
 import DeleteTeacher from "./DeleteTeacher";
 import EditTeacher from "./EditTeacher";
 import { useState, useEffect } from "react";
-
-type TeacherOptionsProps = {
-    teacher: Teacher;
-    isChecked: boolean;
-}
+import { LuPen, LuTrash2 } from "react-icons/lu";
 
 type Teacher = {
     id: number;
@@ -18,19 +14,17 @@ type Teacher = {
 }
 
 
-export default function TeacherOptions(props: TeacherOptionsProps) {
-    const teacher = props.teacher;
-    const [open, setOpen] = useState(props.isChecked);
+export default function TeacherOptions({teacher, isChecked, reloadState}: {teacher: Teacher; isChecked: boolean, reloadState: React.Dispatch<React.SetStateAction<boolean>>}) {
+    const [open, setOpen] = useState(isChecked);
+    const [editOpen, setEditOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
 
     useEffect(() => {
-        setOpen(props.isChecked);
-    }, [props.isChecked]);
+        setOpen(isChecked);
+    }, [isChecked]);
 
-    return (
-        <ActionBar.Root
-            open={open}
-            onOpenChange={(details: { open: boolean }) => setOpen(details.open)}
-        >
+    return (<>
+        <ActionBar.Root open={open} onOpenChange={e => setOpen(!!e.open)}>
             <Portal>
             <ActionBar.Positioner>
                 <ActionBar.Content>
@@ -38,8 +32,12 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
                     {teacher.firstname} {teacher.lastname}
                 </ActionBar.SelectionTrigger>
                 <ActionBar.Separator />
-                    <EditTeacher {...teacher} />
-                    <DeleteTeacher teacherId={teacher.id}/>
+                    <Button variant="outline" size="sm" onClick={() => setEditOpen(true)}>
+                        <LuPen /> <Text>Edit</Text>
+                    </Button>
+                    <Button variant="outline" size="sm" onClick={() => setDeleteOpen(true)}>
+                        <LuTrash2 /> <Text>Delete</Text>
+                    </Button>
                 <ActionBar.CloseTrigger asChild>
                     <CloseButton size="sm" />
                 </ActionBar.CloseTrigger>
@@ -47,5 +45,8 @@ export default function TeacherOptions(props: TeacherOptionsProps) {
             </ActionBar.Positioner>
             </Portal>
         </ActionBar.Root>
+        <EditTeacher teacher={teacher} open={editOpen} onOpenChange={setEditOpen} reloadState={reloadState}/>
+        <DeleteTeacher teacherId={teacher.id} open={deleteOpen} onOpenChange={setDeleteOpen} reloadState={reloadState} />
+        </>
     )
 }

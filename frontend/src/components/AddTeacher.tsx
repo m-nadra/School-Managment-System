@@ -10,19 +10,19 @@ import {
     Box,
     defineStyle
 } from "@chakra-ui/react"
-
+import { toaster } from "./ui/toaster";
 import { useState } from "react";
 import { LuUserRoundPlus } from "react-icons/lu";
 
-export default function AddTeacherButton() {
+const apiUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
+export default function AddTeacherButton({reloadState}: {reloadState : React.Dispatch<React.SetStateAction<boolean>>}) {
     const [firstName, setFirstName] = useState("");
     const [secondName, setSecondName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
-    function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        const apiUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
-        fetch(`${apiUrl}/teacher/`, {
+    const handleAdding = async () => {
+        await fetch(`${apiUrl}/teacher/`, {
             method: "POST",
             credentials: "include",
             headers: {
@@ -34,6 +34,12 @@ export default function AddTeacherButton() {
                 lastname: lastName,
                 email: email,
             }),
+        }).then(() => {
+            reloadState(true)
+            toaster.create({
+                description: "Teacher added successfully",
+                type: "success",
+            })
         })
         .catch(error => console.error("Error adding teacher:", error))
     }
@@ -51,10 +57,9 @@ export default function AddTeacherButton() {
                 <Dialog.Header>
                 <Dialog.Title>Add teacher</Dialog.Title>
                 </Dialog.Header>
-                <form onSubmit={handleSubmit}>
                 <Dialog.Body>
                     <Flex direction="column" gap={4}>
-                        <Field.Root required>
+                        <Field.Root>
                             <Box pos="relative" w="full">
                                 <Input onChange={e => setFirstName(e.target.value)} className="peer" placeholder="" />
                                 <Field.Label css={floatingStyles}>First name</Field.Label>
@@ -66,13 +71,13 @@ export default function AddTeacherButton() {
                                 <Field.Label css={floatingStyles}>Second name</Field.Label>
                             </Box>
                         </Field.Root>
-                        <Field.Root required>
+                        <Field.Root>
                             <Box pos="relative" w="full">
                                 <Input onChange={e => setLastName(e.target.value)} className="peer" placeholder="" />
                                 <Field.Label css={floatingStyles}>Last name</Field.Label>
                             </Box>
                         </Field.Root>
-                        <Field.Root required>
+                        <Field.Root>
                             <Box pos="relative" w="full">
                                 <Input onChange={e => setEmail(e.target.value)} className="peer" placeholder="" />
                                 <Field.Label css={floatingStyles}>Email</Field.Label>
@@ -84,9 +89,10 @@ export default function AddTeacherButton() {
                     <Dialog.ActionTrigger asChild>
                         <Button variant="outline">Cancel</Button>
                     </Dialog.ActionTrigger>
-                    <Button type="submit">Add</Button>
+                    <Dialog.ActionTrigger asChild>
+                        <Button onClick={handleAdding}>Add</Button>
+                    </Dialog.ActionTrigger>
                 </Dialog.Footer>
-                </form>
                 <Dialog.CloseTrigger asChild>
                 <CloseButton size="sm" />
                 </Dialog.CloseTrigger>
