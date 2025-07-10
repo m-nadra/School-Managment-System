@@ -1,31 +1,55 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { Provider } from '@/components/ui/provider'
-import { BrowserRouter as Router, Routes, Route } from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Main from "./pages/Main";
 import Teachers from './components/Teachers';
 import Profile from './components/Profile';
 
+const router = createBrowserRouter([
+  {
+    path: '/',
+    Component: Main,
+    errorElement: <p>404 Page not found</p>,
+  },
+  {
+    path: '/login',
+    Component: Login,
+  },
+  {
+    path: '/dashboard',
+    Component: Dashboard,
+    children: [
+      {
+        index: true,
+        element: <p>Dashboard</p>,
+      },
+      {
+        path: 'teachers',
+        Component: Teachers,
+      },
+      {
+        path: 'profile',
+        Component: Profile,
+      },
+      {
+        path: 'students',
+        element: <p>Students</p>,
+      },
+      {
+        path: 'classes',
+        element: <p>Classes</p>,
+      },
+      {
+        path: 'users',
+        element: <p>User management</p>,
+      }
+  ]}
+]);
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<Main />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<Dashboard />} >
-            <Route index element={<p>Dashboard</p>} />
-            <Route path="teachers" element={<Teachers/>} />
-            <Route path="profile" element={<Profile/>} />
-            <Route path="students" element={<p>Students</p>} />
-            <Route path="classes" element={<p>Classes</p>} />
-            <Route path="users" element={<p>User managment</p>} />
-          </Route>
-        </Routes>
-      </Router>
-    </Provider>
-  </StrictMode>,
+  <Provider>
+    <RouterProvider router={router} />
+  </Provider>
 )
