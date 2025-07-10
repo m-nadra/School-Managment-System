@@ -4,15 +4,13 @@ import {
     Text, 
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router";
 import { useColorMode, useColorModeValue } from "../components/ui/color-mode";
 import { LuMoon, LuSun, LuLogOut } from "react-icons/lu";
 import { GiTeacher } from "react-icons/gi";
 import { FaHome, FaUserCircle, FaUserGraduate } from "react-icons/fa";
 import { SiGoogleclassroom } from "react-icons/si";
 import { GrUserSettings } from "react-icons/gr";
-import { Link } from "react-router-dom";
-
 
 export default function Nav() {
     const { colorMode, toggleColorMode } = useColorMode();

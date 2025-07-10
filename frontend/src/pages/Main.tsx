@@ -15,7 +15,7 @@ import {
 } from "react-icons/lu";
 import classroomImage from "../assets/img/classroom.jpg";
 import { useColorMode } from "../components/ui/color-mode"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 export default function Main() {
     const { toggleColorMode, colorMode } = useColorMode()
