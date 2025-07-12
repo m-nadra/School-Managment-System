@@ -51,7 +51,7 @@ export default function Teachers() {
     }, [reload]);
 
     return (
-        <Flex w="85%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
+        <Flex w="100%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
             <Flex direction="row" justifyContent="space-between" align="center">
                 <Heading size="2xl">Teachers</Heading>
                 <Stat.Root display="flex" alignItems="flex-end">

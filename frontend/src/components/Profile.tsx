@@ -39,7 +39,7 @@ export default function Profile() {
     }, []);
 
     return (
-        <Flex justifyContent="space-around" align="center" w="85%">
+        <Flex w="100%" justifyContent="space-around" align="center">
             <Flex direction="column" alignItems="center" gap={4} h="100vh" w="50%" justify="center">
                 <Heading>Account</Heading>
                 <Text>Username: {username}</Text>

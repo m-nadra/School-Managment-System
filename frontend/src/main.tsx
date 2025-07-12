@@ -1,9 +1,9 @@
 import { createRoot } from 'react-dom/client'
 import { Provider } from '@/components/ui/provider'
 import { createBrowserRouter, RouterProvider } from "react-router";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Main from "./pages/Main";
+import Login from "./pages/LoginPage";
+import Dashboard from "./pages/DashboardPage";
+import Main from "./pages/MainPage";
 import Teachers from './components/Teachers';
 import Profile from './components/Profile';
 
