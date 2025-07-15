@@ -39,15 +39,15 @@ export default function Teachers() {
             credentials: "include"
         })
         .then(async response => {
+            if (response.status === 401) {
+                navigate("/login");
+                sessionStorage.clear();
+                return;
+            }
             const teachers = await response.json();
             setTeachers(teachers);
             setTeachersCount(teachers.length);
-        }).then(() => setReload(false))
-        .catch(error => {
-            console.error("Error fetching teachers:", error)
-            navigate("/login");
-            sessionStorage.clear();
-        });
+        }).then(() => setReload(false));
     }, [reload]);
 
     return (
