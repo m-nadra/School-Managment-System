@@ -65,6 +65,15 @@ async def read_user_profile(
     return None
 
 
+@router.get("/logged_user", status_code=200)
+async def get_logged_user(current_user: UserDep) -> model.LoggedUserResponse:
+    """Returns the logged user information."""
+    return model.LoggedUserResponse(
+        username=current_user.username,
+        role=current_user.role,
+    )
+
+
 @router.post("/logout", status_code=204)
 async def logout(response: Response) -> None:
     """Logs out the user by deleting the JWT token."""

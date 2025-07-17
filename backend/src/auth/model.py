@@ -9,3 +9,8 @@ class LoginResponse(BaseModel):
 class AuthData(BaseModel):
     username: str
     password: str
+
+
+class LoggedUserResponse(BaseModel):
+    username: str
+    role: str

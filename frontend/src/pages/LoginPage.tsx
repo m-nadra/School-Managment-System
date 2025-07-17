@@ -1,68 +1,24 @@
-import { 
-    Input,
-    Flex,
-    Heading,
-    ClientOnly,
-    IconButton,
-    Skeleton,
-    Button,
-    InputGroup,
-    Text,
-} from "@chakra-ui/react"
-import { 
-    LuMoon, 
-    LuSun,
-    LuUser,
-    LuKey,
-} from "react-icons/lu"
+import { Input, Flex, Heading, ClientOnly, IconButton, Skeleton, Button, InputGroup, Text } from "@chakra-ui/react"
+import { LuMoon, LuSun, LuUser, LuKey } from "react-icons/lu"
 import { useColorMode, useColorModeValue } from "../components/ui/color-mode"
 import { PasswordInput } from "@/components/ui/password-input"
-import { useState } from "react"
-import { useNavigate } from "react-router"
+import { Form, useActionData } from "react-router"
 
 export default function Login() {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [errorMessage, setErrorMessage] = useState("");
+    const actionData = useActionData();
+    const errorMessage = actionData?.error;
     const { toggleColorMode, colorMode } = useColorMode()
-    const navigate = useNavigate();
-
-    const handleLogin = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
-        e.preventDefault();
-
-        const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
-        const response = await fetch(`${apiUrl}/token`, {
-            method: "POST",
-            credentials: "include",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password,
-            })
-        });
-        const responseData = await response.json();
-
-        if (response.ok) {
-            sessionStorage.setItem("username", responseData['username']);
-            sessionStorage.setItem("role", responseData['role']);
-            navigate("/dashboard");
-        } else {
-            setErrorMessage(responseData['detail'] || "Login failed");
-        }
-    };
 
     return (
-        <form onSubmit={handleLogin} method="POST">
+        <Form method="post">
             <Flex justifyContent='center' alignItems='center' flexDirection='column' h='100vh' textAlign='center' gap={4} bg={useColorModeValue('gray.100', 'gray.800')}>
                 <Flex flexDirection="column" p={12} borderRadius={8} boxShadow="lg" spaceY={3}>
                     <Heading>Login to system</Heading>
                     <InputGroup startElement={<LuUser />}>
-                        <Input placeholder="Username" size='lg' onChange={(e) => setUsername(e.target.value)} required/>
+                        <Input name="username" placeholder="Username" size='lg' />
                     </InputGroup>
                     <InputGroup startElement={<LuKey />}>
-                        <PasswordInput placeholder="Password" size='lg' onChange={(e) => setPassword(e.target.value)} required/>
+                        <PasswordInput name="password" placeholder="Password" size='lg' />
                     </InputGroup>
                     <Button type="submit">Login</Button>
                     {errorMessage && <Text color='red'>{errorMessage}</Text>}
@@ -73,6 +29,6 @@ export default function Login() {
                     </IconButton>
                 </ClientOnly>
             </Flex>
-        </form>
+        </Form>
     )
 }
