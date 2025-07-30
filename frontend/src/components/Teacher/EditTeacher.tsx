@@ -1,17 +1,9 @@
 import { Box, Button, Dialog, Flex, Input, Portal, CloseButton, Field, defineStyle } from "@chakra-ui/react"
 import { useState } from "react";
-import { toaster } from "./ui/toaster";
+import { toaster } from "../ui/toaster";
+import { Teacher } from "@/types/Teacher.types";
 
 const BACKEND_URL = import.meta.env.BACKEND_URL || 'http://localhost:5000';
-
-type Teacher = {
-    id: number;
-    firstname: string;
-    secondname: string;
-    lastname: string;
-    email: string;
-    user_id: number;
-}
 
 export default function EditTeacher({teacher, open, onOpenChange, reloadState}: {teacher: Teacher, open: boolean, onOpenChange: (open: boolean) => void, reloadState: React.Dispatch<React.SetStateAction<boolean>>}) {
     const [firstName, setFirstName] = useState(teacher.firstname);

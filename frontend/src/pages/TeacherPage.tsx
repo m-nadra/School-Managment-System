@@ -1,30 +1,14 @@
-import { 
-    Table,
-    Flex,
-    Input,
-    InputGroup,
-    Stat,
-    Heading
-} from "@chakra-ui/react"
+import { Table, Flex, Input, InputGroup, Stat, Heading } from "@chakra-ui/react"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { 
-    LuSearch, 
-} from "react-icons/lu";
-import AddTeacherButton from "./AddTeacher";
-import TeacherOptions from "./TeacherOptions";
-import { Toaster } from "./ui/toaster";
+import { LuSearch } from "react-icons/lu";
+import AddTeacherButton from "../components/Teacher/AddTeacher";
+import TeacherOptions from "../components/Teacher/TeacherOptions";
+import { Toaster } from "../components/ui/toaster";
+import { Teacher } from "../types/Teacher.types";
 
 const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
-type Teacher = {
-    id: number;
-    firstname: string;
-    secondname: string;
-    lastname: string;
-    email: string;
-    user_id: number;
-}
 
 export default function Teachers() {
     const [teachers, setTeachers] = useState<Array<Teacher>>([]);

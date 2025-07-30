@@ -10,7 +10,7 @@ import {
     Box,
     defineStyle
 } from "@chakra-ui/react"
-import { toaster } from "./ui/toaster";
+import { toaster } from "../ui/toaster";
 import { useState } from "react";
 import { LuUserRoundPlus } from "react-icons/lu";
 

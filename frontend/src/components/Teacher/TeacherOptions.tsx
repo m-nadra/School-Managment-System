@@ -3,15 +3,7 @@ import DeleteTeacher from "./DeleteTeacher";
 import EditTeacher from "./EditTeacher";
 import { useState, useEffect } from "react";
 import { LuPen, LuTrash2 } from "react-icons/lu";
-
-type Teacher = {
-    id: number;
-    firstname: string;
-    secondname: string;
-    lastname: string;
-    email: string;
-    user_id: number;
-}
+import { Teacher } from "@/types/Teacher.types";
 
 
 export default function TeacherOptions({teacher, isChecked, reloadState}: {teacher: Teacher; isChecked: boolean, reloadState: React.Dispatch<React.SetStateAction<boolean>>}) {

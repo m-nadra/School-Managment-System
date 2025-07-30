@@ -4,7 +4,7 @@ import { createBrowserRouter, RouterProvider, redirect } from "react-router";
 import Login from "./pages/LoginPage";
 import Dashboard from "./pages/DashboardPage";
 import Main from "./pages/MainPage";
-import Teachers from './components/Teachers';
+import Teachers from './pages/TeacherPage';
 import Profile from './components/Profile';
 
 const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";

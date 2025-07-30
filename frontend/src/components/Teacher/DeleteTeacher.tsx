@@ -1,5 +1,5 @@
 import { Dialog, Button, Portal, Text } from '@chakra-ui/react';
-import { toaster } from './ui/toaster';
+import { toaster } from '../ui/toaster';
 
 const BACKEND_URL = import.meta.env.BACKEND_URL || 'http://localhost:5000';
 
