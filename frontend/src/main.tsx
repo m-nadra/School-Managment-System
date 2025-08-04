@@ -6,6 +6,7 @@ import Dashboard from "./pages/DashboardPage";
 import Main from "./pages/MainPage";
 import Teachers from './pages/TeacherPage';
 import Profile from './components/Profile';
+import { toaster } from './components/ui/toaster';
 
 const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
 	{
 		path: '/dashboard',
 		Component: Dashboard,
+		shouldRevalidate: () => false,
 		loader: async () => {
 			try {
 				const response = await fetch(`${apiUrl}/logged_user`, {
@@ -75,6 +77,71 @@ const router = createBrowserRouter([
 			{
 				path: 'teachers',
 				Component: Teachers,
+				loader: async () => {
+					try {
+						const response = await fetch(`${apiUrl}/teacher/`, {
+							method: "GET",
+							credentials: "include"
+						});
+						if (response.status === 401) {
+							return redirect("/login");
+						}
+						if (!response.ok) {
+							throw new Error("Failed to fetch teachers");
+						}
+						const teachers = await response.json();
+						const teachersCount = teachers.length;
+						return { teachers, teachersCount };
+					} catch (error) {
+						console.error("Error fetching teachers:", error);
+						throw new Response("Internal Server Error", { status: 500 });
+					}
+				},
+				children: [
+					{
+						path: 'add',
+						action: async ({ request }) => {
+							const formData = await request.formData();
+							const firstname = formData.get("firstname");
+							const secondname = formData.get("secondname");
+							const lastname = formData.get("lastname");
+							const email = formData.get("email");
+
+							if (!firstname || !secondname || !lastname || !email) {
+								return { error: "All fields are required" };
+							}
+
+							try {
+								const response = await fetch(`${apiUrl}/teacher/`, {
+									method: "POST",
+									credentials: "include",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify({
+										"firstname": firstname,
+										"secondname": secondname,
+										"lastname": lastname,
+										"email": email,
+									}),
+								});
+								
+								if (response.ok) {
+									toaster.create({
+										description: "Teacher added successfully",
+										type: "success",
+									});
+									return redirect("/dashboard/teachers");
+								} else {
+									return { error: (await response.json()).detail };
+								}
+							} catch (error) {
+								console.error("Error adding teacher:", error);
+								return { error: "An unexpected error occurred" };
+							}
+						}
+					},
+				]
 			},
 			{
 				path: 'profile',

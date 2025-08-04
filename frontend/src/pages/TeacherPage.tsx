@@ -1,38 +1,15 @@
 import { Table, Flex, Input, InputGroup, Stat, Heading } from "@chakra-ui/react"
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
+import { useState } from "react";
+import { useLoaderData } from "react-router";
 import { LuSearch } from "react-icons/lu";
 import AddTeacherButton from "../components/Teacher/AddTeacher";
 import TeacherOptions from "../components/Teacher/TeacherOptions";
 import { Toaster } from "../components/ui/toaster";
-import { Teacher } from "../types/Teacher.types";
-
-const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
-
+import { Teacher } from "@/types/Teacher.types";
 
 export default function Teachers() {
-    const [teachers, setTeachers] = useState<Array<Teacher>>([]);
-    const [teachersCount, setTeachersCount] = useState(0);
+    const {teachers, teachersCount} = useLoaderData();
     const [checkedTeacher, setCheckedTeacher] = useState(0);
-    const [reload, setReload] = useState(false);
-    const navigate = useNavigate();
-
-    useEffect(() => {
-        fetch(`${apiUrl}/teacher/`, {
-            method: "GET",
-            credentials: "include"
-        })
-        .then(async response => {
-            if (response.status === 401) {
-                navigate("/login");
-                sessionStorage.clear();
-                return;
-            }
-            const teachers = await response.json();
-            setTeachers(teachers);
-            setTeachersCount(teachers.length);
-        }).then(() => setReload(false));
-    }, [reload]);
 
     return (
         <Flex w="100%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
@@ -47,7 +24,7 @@ export default function Teachers() {
                 <InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
                     <Input id="searchInput" placeholder="Search in teachers" onChange={searchInTable}/>
                 </InputGroup>
-                <AddTeacherButton reloadState={setReload}/>
+                <AddTeacherButton />
             </Flex>
             <Flex>
             <Table.Root id="table" stickyHeader interactive variant="outline" rounded="md">
@@ -60,7 +37,7 @@ export default function Teachers() {
                     </Table.Row>
                 </Table.Header>
                 <Table.Body>
-                    {teachers.map((teacher) => (
+                    {teachers.map((teacher : Teacher) => (
                         <Table.Row
                             key={teacher.id}
                             onClick={() => setCheckedTeacher(checkedTeacher === teacher.id ? 0 : teacher.id)}
@@ -69,7 +46,7 @@ export default function Teachers() {
                             <Table.Cell>{teacher.secondname}</Table.Cell>
                             <Table.Cell>{teacher.lastname}</Table.Cell>
                             <Table.Cell>{teacher.email}</Table.Cell>
-                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} reloadState={setReload}/>
+                            {/* <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} reloadState={setReload}/> */}
                         </Table.Row>
                     ))}
                 </Table.Body>
