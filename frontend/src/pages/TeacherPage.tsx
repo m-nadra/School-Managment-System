@@ -46,7 +46,7 @@ export default function Teachers() {
                             <Table.Cell>{teacher.secondname}</Table.Cell>
                             <Table.Cell>{teacher.lastname}</Table.Cell>
                             <Table.Cell>{teacher.email}</Table.Cell>
-                            {/* <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} reloadState={setReload}/> */}
+                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
                         </Table.Row>
                     ))}
                 </Table.Body>

@@ -141,6 +141,50 @@ const router = createBrowserRouter([
 							}
 						}
 					},
+					{
+						path: 'edit',
+						action: async ({ request }) => {
+							const formData = await request.formData();
+							const id = formData.get("id");
+							const firstname = formData.get("firstname");
+							const secondname = formData.get("secondname");
+							const lastname = formData.get("lastname");
+							const email = formData.get("email");
+
+							if (!id || !firstname || !secondname || !lastname || !email) {
+								return { error: "All fields are required" };
+							}
+
+							try {
+								const response = await fetch(`${apiUrl}/teacher/${id}`, {
+									method: "PUT",
+									credentials: "include",
+									headers: {
+										"Content-Type": "application/json",
+									},
+									body: JSON.stringify({
+										"firstname": firstname,
+										"secondname": secondname,
+										"lastname": lastname,
+										"email": email,
+									}),
+								});
+								
+								if (response.ok) {
+									toaster.create({
+										description: "Teacher edited successfully",
+										type: "success",
+									});
+									return redirect("/dashboard/teachers");
+								} else {
+									return { error: (await response.json()).detail };
+								}
+							} catch (error) {
+								console.error("Error editing teacher:", error);
+								return { error: "An unexpected error occurred" };
+							}
+						}
+					}
 				]
 			},
 			{

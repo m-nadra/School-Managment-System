@@ -6,7 +6,7 @@ import { LuPen, LuTrash2 } from "react-icons/lu";
 import { Teacher } from "@/types/Teacher.types";
 
 
-export default function TeacherOptions({teacher, isChecked, reloadState}: {teacher: Teacher; isChecked: boolean, reloadState: React.Dispatch<React.SetStateAction<boolean>>}) {
+export default function TeacherOptions({teacher, isChecked}: {teacher: Teacher; isChecked: boolean}) {
     const [open, setOpen] = useState(isChecked);
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
@@ -37,8 +37,8 @@ export default function TeacherOptions({teacher, isChecked, reloadState}: {teach
             </ActionBar.Positioner>
             </Portal>
         </ActionBar.Root>
-        <EditTeacher teacher={teacher} open={editOpen} onOpenChange={setEditOpen} reloadState={reloadState}/>
-        <DeleteTeacher teacherId={teacher.id} open={deleteOpen} onOpenChange={setDeleteOpen} reloadState={reloadState} />
+        <EditTeacher teacher={teacher} open={editOpen} onOpenChange={setEditOpen}/>
+        <DeleteTeacher teacherId={teacher.id} open={deleteOpen} onOpenChange={setDeleteOpen}/>
         </>
     )
 }

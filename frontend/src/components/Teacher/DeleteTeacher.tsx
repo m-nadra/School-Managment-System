@@ -3,13 +3,12 @@ import { toaster } from '../ui/toaster';
 
 const BACKEND_URL = import.meta.env.BACKEND_URL || 'http://localhost:5000';
 
-export default function DeleteTeacher({ teacherId, open, onOpenChange, reloadState }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void, reloadState: React.Dispatch<React.SetStateAction<boolean>> }) {
+export default function DeleteTeacher({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
     const handleDelete = () => {
         fetch(`${BACKEND_URL}/teacher/${teacherId}`, {
             method: 'DELETE',
             credentials: 'include',
         }).then(() => {
-            reloadState(true);
             toaster.create({
                 description: "Teacher deleted successfully",
                 type: "success",
