@@ -184,6 +184,37 @@ const router = createBrowserRouter([
 								return { error: "An unexpected error occurred" };
 							}
 						}
+					},
+					{
+						path: 'delete',
+						action: async ({ request }) => {
+							const formData = await request.formData();
+							const id = formData.get("id");
+
+							if (!id) {
+								return { error: "Teacher ID is required" };
+							}
+
+							try {
+								const response = await fetch(`${apiUrl}/teacher/${id}`, {
+									method: "DELETE",
+									credentials: "include",
+								});
+								
+								if (response.ok) {
+									toaster.create({
+										description: "Teacher deleted successfully",
+										type: "success",
+									});
+									return redirect("/dashboard/teachers");
+								} else {
+									return { error: (await response.json()).detail };
+								}
+							} catch (error) {
+								console.error("Error deleting teacher:", error);
+								return { error: "An unexpected error occurred" };
+							}
+						}
 					}
 				]
 			},

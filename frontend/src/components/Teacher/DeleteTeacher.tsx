@@ -1,24 +1,7 @@
-import { Dialog, Button, Portal, Text } from '@chakra-ui/react';
-import { toaster } from '../ui/toaster';
-
-const BACKEND_URL = import.meta.env.BACKEND_URL || 'http://localhost:5000';
+import { Dialog, Button, Portal, Text, Input } from '@chakra-ui/react';
+import { Form } from 'react-router';
 
 export default function DeleteTeacher({ teacherId, open, onOpenChange }: { teacherId: number, open: boolean, onOpenChange: (open: boolean) => void }) {
-    const handleDelete = () => {
-        fetch(`${BACKEND_URL}/teacher/${teacherId}`, {
-            method: 'DELETE',
-            credentials: 'include',
-        }).then(() => {
-            toaster.create({
-                description: "Teacher deleted successfully",
-                type: "success",
-            });
-        })
-        .catch(error => {
-            console.error('Error deleting teacher:', error);
-        });
-    }
-
     return ( 
         <Dialog.Root open={open} onOpenChange={e => onOpenChange(!!e.open)}>
             <Portal>
@@ -29,6 +12,8 @@ export default function DeleteTeacher({ teacherId, open, onOpenChange }: { teach
                 <Dialog.Header>
                     <Dialog.Title>Delete Teacher</Dialog.Title>
                 </Dialog.Header>
+                <Form method='post' action="delete">
+                    <Input name="id" defaultValue={teacherId} hidden />
                 <Dialog.Body>
                     <Text>Are you sure you want to delete this teacher?</Text>
                 </Dialog.Body>
@@ -36,8 +21,9 @@ export default function DeleteTeacher({ teacherId, open, onOpenChange }: { teach
                     <Dialog.ActionTrigger asChild>
                         <Button variant="outline">Cancel</Button>
                     </Dialog.ActionTrigger>
-                    <Button onClick={handleDelete}>Delete</Button>
+                    <Button type='submit'>Delete</Button>
                 </Dialog.Footer>
+                </Form>
                 </Dialog.Content>
             </Dialog.Positioner>
             </Portal>
