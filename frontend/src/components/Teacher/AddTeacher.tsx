@@ -1,6 +1,7 @@
-import { Button, CloseButton, Dialog, Portal, IconButton, Field, Flex, Input, Box, defineStyle } from "@chakra-ui/react";
+import { Button, CloseButton, Dialog, Portal, IconButton, Flex } from "@chakra-ui/react";
 import { LuUserRoundPlus } from "react-icons/lu";
 import { Form } from "react-router"
+import TeacherForm from "./TeacherForm";
 
 export default function AddTeacherButton() {
     return (
@@ -20,30 +21,7 @@ export default function AddTeacherButton() {
                 <Form method="post" action="add">
                 <Dialog.Body>
                     <Flex direction="column" gap={4}>
-                        <Field.Root>
-                            <Box pos="relative" w="full">
-                                <Input name="firstname" className="peer" placeholder="" />
-                                <Field.Label css={floatingStyles}>First name</Field.Label>
-                            </Box>
-                        </Field.Root>
-                        <Field.Root>
-                            <Box pos="relative" w="full">
-                                <Input name="secondname" className="peer" placeholder="" />
-                                <Field.Label css={floatingStyles}>Second name</Field.Label>
-                            </Box>
-                        </Field.Root>
-                        <Field.Root>
-                            <Box pos="relative" w="full">
-                                <Input name="lastname" className="peer" placeholder="" />
-                                <Field.Label css={floatingStyles}>Last name</Field.Label>
-                            </Box>
-                        </Field.Root>
-                        <Field.Root>
-                            <Box pos="relative" w="full">
-                                <Input name="email" className="peer" placeholder="" />
-                                <Field.Label css={floatingStyles}>Email</Field.Label>
-                            </Box>
-                        </Field.Root>
+                        <TeacherForm />
                     </Flex>
                 </Dialog.Body>
                 <Dialog.Footer>
@@ -64,24 +42,3 @@ export default function AddTeacherButton() {
         </Dialog.Root>
     )
 }
-
-const floatingStyles = defineStyle({
-    pos: "absolute",
-    bg: "bg",
-    px: "0.5",
-    top: "-3",
-    insetStart: "2",
-    fontWeight: "normal",
-    pointerEvents: "none",
-    transition: "position",
-    _peerPlaceholderShown: {
-        color: "fg.muted",
-        top: "2.5",
-        insetStart: "3",
-    },
-    _peerFocusVisible: {
-        color: "fg",
-        top: "-3",
-        insetStart: "2",
-    },
-})
