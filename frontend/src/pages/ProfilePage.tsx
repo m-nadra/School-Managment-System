@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router";
-import ChangePassword from "@/components/ChangePassword";
+import ChangePassword from "@/components/Profile/ChangePassword";
 
 
 type User = {
