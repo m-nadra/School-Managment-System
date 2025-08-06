@@ -26,32 +26,32 @@ export default function Teachers() {
                 </InputGroup>
                 <AddTeacherButton />
             </Flex>
-            <Flex>
-            <Table.Root id="table" stickyHeader interactive variant="outline" rounded="md">
-                <Table.Header>
-                    <Table.Row>
-                        <Table.ColumnHeader>First Name</Table.ColumnHeader>
-                        <Table.ColumnHeader>Second Name</Table.ColumnHeader>
-                        <Table.ColumnHeader>Last Name</Table.ColumnHeader>
-                        <Table.ColumnHeader>Email</Table.ColumnHeader>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {teachers.map((teacher : Teacher) => (
-                        <Table.Row
+            <Table.ScrollArea borderWidth="1px" rounded="md" w="100%">
+                <Table.Root id="table" interactive variant="outline">
+                    <Table.Header>
+                        <Table.Row>
+                            <Table.ColumnHeader>First Name</Table.ColumnHeader>
+                            <Table.ColumnHeader>Second Name</Table.ColumnHeader>
+                            <Table.ColumnHeader>Last Name</Table.ColumnHeader>
+                            <Table.ColumnHeader>Email</Table.ColumnHeader>
+                        </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                        {teachers.map((teacher : Teacher) => (
+                            <Table.Row
                             key={teacher.id}
                             onClick={() => setCheckedTeacher(checkedTeacher === teacher.id ? 0 : teacher.id)}
-                        >
-                            <Table.Cell>{teacher.firstname}</Table.Cell>
-                            <Table.Cell>{teacher.secondname}</Table.Cell>
-                            <Table.Cell>{teacher.lastname}</Table.Cell>
-                            <Table.Cell>{teacher.email}</Table.Cell>
-                            <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table.Root>
-            </Flex>
+                            >
+                                <Table.Cell>{teacher.firstname}</Table.Cell>
+                                <Table.Cell>{teacher.secondname}</Table.Cell>
+                                <Table.Cell>{teacher.lastname}</Table.Cell>
+                                <Table.Cell>{teacher.email}</Table.Cell>
+                                <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
+                            </Table.Row>
+                        ))}
+                    </Table.Body>
+                </Table.Root>
+            </Table.ScrollArea>
             <Toaster />
         </Flex>
     );
