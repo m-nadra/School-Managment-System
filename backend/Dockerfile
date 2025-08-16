@@ -18,8 +18,6 @@ COPY --from=base /app/requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt \
     && rm requirements.txt
 
-COPY ./src /app/
+COPY ./src /app/src
 
-ENV PYTHONPATH=/app
-
-CMD ["uvicorn", "routes.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "src.main:app", "--host", "0.0.0.0", "--port", "5000"]

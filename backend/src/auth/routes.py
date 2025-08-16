@@ -4,7 +4,7 @@ from ..database import SessionDep, User, Teacher, Roles
 from .service import create_access_token, UserDep, check_if_hash_valid
 from . import model
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(prefix="/api", tags=["auth"])
 
 
 @router.post("/token", status_code=200)

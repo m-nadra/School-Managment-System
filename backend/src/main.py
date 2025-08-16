@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from .api import include_routers
-from .database import createTables
+from .database import createTables, addAdminAccount
 from contextlib import asynccontextmanager
 from prometheus_client import make_asgi_app
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,6 +11,7 @@ from typing import AsyncIterator
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     createTables()
+    addAdminAccount()
     yield
 
 

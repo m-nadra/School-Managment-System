@@ -9,8 +9,6 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { GrUserSettings } from "react-icons/gr";
 import { Outlet } from "react-router";
 
-const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
-
 
 export default function Dashboard() {
     const {colorMode, toggleColorMode} = useColorMode();
@@ -18,7 +16,7 @@ export default function Dashboard() {
     const [toggledNavbar, setToggledNavbar] = useState(false);
     const navigate = useNavigate();
     const Logout = async () => {
-        await fetch(`${apiUrl}/logout`, {
+        await fetch("/api/logout", {
             method: "POST",
             credentials: "include"
         });

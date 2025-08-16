@@ -8,7 +8,6 @@ import Teachers from './pages/TeacherPage';
 import Profile from './pages/ProfilePage';
 import { toaster } from './components/ui/toaster';
 
-const apiUrl = import.meta.env.BACKEND_URL || "http://localhost:5000";
 
 const router = createBrowserRouter([
 	{
@@ -27,7 +26,7 @@ const router = createBrowserRouter([
 			if (!username || !password) 
 				return { error: "Username and password are required" };
 			try {
-				const response = await fetch(`${apiUrl}/token`, {
+				const response = await fetch("/api/token", {
 					method: "POST",
 					credentials: "include",
 					headers: {
@@ -42,7 +41,7 @@ const router = createBrowserRouter([
 					return { error: (await response.json()).detail };
 			} 
 			catch (error) {
-				return { error: "An unexpected error occurred" };
+				return { error: `An unexpected error occurred: ${error}` };
 			}
 		}
 	},
@@ -52,7 +51,7 @@ const router = createBrowserRouter([
 		shouldRevalidate: () => false,
 		loader: async () => {
 			try {
-				const response = await fetch(`${apiUrl}/logged_user`, {
+				const response = await fetch("/api/logged_user", {
 					method: "GET",
 					credentials: "include",
 				});
@@ -79,7 +78,7 @@ const router = createBrowserRouter([
 				Component: Teachers,
 				loader: async () => {
 					try {
-						const response = await fetch(`${apiUrl}/teacher/`, {
+						const response = await fetch("/api/teacher/", {
 							method: "GET",
 							credentials: "include"
 						});
@@ -112,7 +111,7 @@ const router = createBrowserRouter([
 							}
 
 							try {
-								const response = await fetch(`${apiUrl}/teacher/`, {
+								const response = await fetch("/api/teacher/", {
 									method: "POST",
 									credentials: "include",
 									headers: {
@@ -156,7 +155,7 @@ const router = createBrowserRouter([
 							}
 
 							try {
-								const response = await fetch(`${apiUrl}/teacher/${id}`, {
+								const response = await fetch("/api/teacher/", {
 									method: "PUT",
 									credentials: "include",
 									headers: {
@@ -196,7 +195,7 @@ const router = createBrowserRouter([
 							}
 
 							try {
-								const response = await fetch(`${apiUrl}/teacher/${id}`, {
+								const response = await fetch(`/api/teacher/${id}`, {
 									method: "DELETE",
 									credentials: "include",
 								});

@@ -36,7 +36,7 @@ export default function Profile() {
             }
             setUser(await response.json());
         })
-    }, []);
+    });
 
     return (
         <Flex w="100%" justifyContent="space-around" align="center">

@@ -1,0 +1,20 @@
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "80:80"
+    networks:
+      - app_network
+    depends_on:
+      - backend
+
+  backend:
+    build: ./backend
+    environment:
+      - FRONTEND_URL=http://frontend:80
+    networks:
+      - app_network
+
+networks:
+  app_network:
+    driver: bridge

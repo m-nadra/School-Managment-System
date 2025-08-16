@@ -7,7 +7,7 @@ from typing import Sequence
 from . import service
 from src import exceptions
 
-router = APIRouter(prefix="/teacher", tags=["teacher"])
+router = APIRouter(prefix="/api/teacher", tags=["teacher"])
 
 
 @router.get("/", status_code=200)
