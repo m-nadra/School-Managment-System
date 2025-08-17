@@ -3,7 +3,8 @@ RUN apk add dumb-init
 WORKDIR /app
 COPY package*.json ./
 RUN npm ci
-COPY . .
+COPY /src/ ./src/
+COPY index.html vite.config.ts tsconfig*.json ./ 
 RUN dumb-init npm run build
 
 FROM nginx:stable-alpine3.21-perl@sha256:71584d41516107f8cfcf5bc2280f0886f2cf821bd2b42d5cf56e96b02bcdb92a
