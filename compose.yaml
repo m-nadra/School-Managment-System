@@ -10,7 +10,7 @@ services:
         - action: rebuild
           path: ./frontend/package.json
     ports:
-      - "80:80"
+      - "80:3000"
     networks:
       - app_network
 
