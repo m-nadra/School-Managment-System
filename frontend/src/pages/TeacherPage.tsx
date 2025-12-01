@@ -1,4 +1,4 @@
-import { Table, Flex, Input, InputGroup, Stat, Heading } from "@chakra-ui/react"
+import { Table, Flex, Input, InputGroup, Stat, Heading } from "@chakra-ui/react";
 import { useState } from "react";
 import { useLoaderData } from "react-router";
 import { LuSearch } from "react-icons/lu";
@@ -8,74 +8,74 @@ import { Toaster } from "../components/ui/toaster";
 import { Teacher } from "@/types/Teacher.types";
 
 export default function Teachers() {
-    const {teachers, teachersCount} = useLoaderData();
-    const [checkedTeacher, setCheckedTeacher] = useState(0);
+	const { teachers, teachersCount } = useLoaderData();
+	const [checkedTeacher, setCheckedTeacher] = useState(0);
 
-    return (
-        <Flex w="100%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
-            <Flex direction="row" justifyContent="space-between" align="center">
-                <Heading size="2xl">Teachers</Heading>
-                <Stat.Root display="flex" alignItems="flex-end">
-                    <Stat.Label>Teachers in database</Stat.Label>
-                    <Stat.ValueText>{teachersCount}</Stat.ValueText>
-                </Stat.Root>
-            </Flex>
-            <Flex direction="row" justify="flex-end" align="center">
-                <InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
-                    <Input id="searchInput" placeholder="Search in teachers" onChange={searchInTable}/>
-                </InputGroup>
-                <AddTeacherButton />
-            </Flex>
-            <Table.ScrollArea borderWidth="1px" rounded="md" w="100%">
-                <Table.Root id="table" interactive variant="outline">
-                    <Table.Header>
-                        <Table.Row>
-                            <Table.ColumnHeader>First Name</Table.ColumnHeader>
-                            <Table.ColumnHeader>Second Name</Table.ColumnHeader>
-                            <Table.ColumnHeader>Last Name</Table.ColumnHeader>
-                            <Table.ColumnHeader>Email</Table.ColumnHeader>
-                        </Table.Row>
-                    </Table.Header>
-                    <Table.Body>
-                        {teachers.map((teacher : Teacher) => (
-                            <Table.Row
-                            key={teacher.id}
-                            onClick={() => setCheckedTeacher(checkedTeacher === teacher.id ? 0 : teacher.id)}
-                            >
-                                <Table.Cell>{teacher.firstname}</Table.Cell>
-                                <Table.Cell>{teacher.secondname}</Table.Cell>
-                                <Table.Cell>{teacher.lastname}</Table.Cell>
-                                <Table.Cell>{teacher.email}</Table.Cell>
-                                <TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
-                            </Table.Row>
-                        ))}
-                    </Table.Body>
-                </Table.Root>
-            </Table.ScrollArea>
-            <Toaster />
-        </Flex>
-    );
+	return (
+		<Flex w="100%" direction="column" padding="1rem" gap="1rem" boxSizing="border-box">
+			<Flex direction="row" justifyContent="space-between" align="center">
+				<Heading size="2xl">Teachers</Heading>
+				<Stat.Root display="flex" alignItems="flex-end">
+					<Stat.Label>Teachers in database</Stat.Label>
+					<Stat.ValueText>{teachersCount}</Stat.ValueText>
+				</Stat.Root>
+			</Flex>
+			<Flex direction="row" justify="flex-end" align="center">
+				<InputGroup flex="0 1 auto" startElement={<LuSearch />} width="auto">
+					<Input id="searchInput" placeholder="Search in teachers" onChange={searchInTable} />
+				</InputGroup>
+				<AddTeacherButton />
+			</Flex>
+			<Table.ScrollArea borderWidth="1px" rounded="md" w="100%">
+				<Table.Root id="table" interactive variant="outline">
+					<Table.Header>
+						<Table.Row>
+							<Table.ColumnHeader>First Name</Table.ColumnHeader>
+							<Table.ColumnHeader>Second Name</Table.ColumnHeader>
+							<Table.ColumnHeader>Last Name</Table.ColumnHeader>
+							<Table.ColumnHeader>Email</Table.ColumnHeader>
+						</Table.Row>
+					</Table.Header>
+					<Table.Body>
+						{teachers.map((teacher: Teacher) => (
+							<Table.Row
+								key={teacher.id}
+								onClick={() => setCheckedTeacher(checkedTeacher === teacher.id ? 0 : teacher.id)}
+							>
+								<Table.Cell>{teacher.firstname}</Table.Cell>
+								<Table.Cell>{teacher.secondname}</Table.Cell>
+								<Table.Cell>{teacher.lastname}</Table.Cell>
+								<Table.Cell>{teacher.email}</Table.Cell>
+								<TeacherOptions teacher={teacher} isChecked={checkedTeacher === teacher.id} />
+							</Table.Row>
+						))}
+					</Table.Body>
+				</Table.Root>
+			</Table.ScrollArea>
+			<Toaster />
+		</Flex>
+	);
 }
 
 function searchInTable() {
-    const input = document.getElementById("searchInput") as HTMLInputElement;
-    const filter = input.value.toUpperCase();
-    const table = document.getElementById("table") as HTMLTableElement;
-    const tr = table.getElementsByTagName("tr");
+	const input = document.getElementById("searchInput") as HTMLInputElement;
+	const filter = input.value.toUpperCase();
+	const table = document.getElementById("table") as HTMLTableElement;
+	const tr = table.getElementsByTagName("tr");
 
-    for (let i = 0; i < tr.length; i++) {
-        const tds = tr[i].getElementsByTagName("td");
-        let rowMatches = false;
-        for (let j = 0; j < tds.length; j++) {
-            const td = tds[j];
-            if (td) {
-                const txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    rowMatches = true;
-                    break;
-                }
-            }
-        }
-        tr[i].style.display = rowMatches || tds.length === 0 ? "" : "none";
-    }
+	for (let i = 0; i < tr.length; i++) {
+		const tds = tr[i].getElementsByTagName("td");
+		let rowMatches = false;
+		for (let j = 0; j < tds.length; j++) {
+			const td = tds[j];
+			if (td) {
+				const txtValue = td.textContent || td.innerText;
+				if (txtValue.toUpperCase().indexOf(filter) > -1) {
+					rowMatches = true;
+					break;
+				}
+			}
+		}
+		tr[i].style.display = rowMatches || tds.length === 0 ? "" : "none";
+	}
 }

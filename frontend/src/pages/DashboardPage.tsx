@@ -9,71 +9,85 @@ import { SiGoogleclassroom } from "react-icons/si";
 import { GrUserSettings } from "react-icons/gr";
 import { Outlet } from "react-router";
 
-
 export default function Dashboard() {
-    const {colorMode, toggleColorMode} = useColorMode();
-    const {username, role} = useLoaderData();
-    const [toggledNavbar, setToggledNavbar] = useState(false);
-    const navigate = useNavigate();
-    const Logout = async () => {
-        await fetch("/api/logout", {
-            method: "POST",
-            credentials: "include"
-        });
-        navigate("/login");
-    };
+	const { colorMode, toggleColorMode } = useColorMode();
+	const { username, role } = useLoaderData();
+	const [toggledNavbar, setToggledNavbar] = useState(false);
+	const navigate = useNavigate();
+	const Logout = async () => {
+		await fetch("/api/logout", {
+			method: "POST",
+			credentials: "include",
+		});
+		navigate("/login");
+	};
 
-    return (
-        <Flex height="100vh" w="100%">
-            <Flex bg={useColorModeValue("gray.100", "gray.900")} flexDirection="column" gap="1" justify="start" w={toggledNavbar ? "5%" : "15%"} textAlign={"center"}>
-                <Flex flexDir={toggledNavbar ? "column" : "row"} justify="space-around">
-                    <IconButton onClick={toggleColorMode} variant="ghost" size="md">
-                        {colorMode === "light" ? <LuSun /> : <LuMoon />}
-                    </IconButton>
-                    <IconButton onClick={() => setToggledNavbar(!toggledNavbar)} variant="ghost" size="md" order={toggledNavbar ? -1 : 0}>
-                        {toggledNavbar ? <LuArrowRightFromLine />: <LuArrowLeftToLine/>}
-                    </IconButton>
-                </Flex>
-                <Separator size="md" />
-                <Flex flexDirection="column" gap="1">
-                    <For each={[
-                        { icon: <FaHome />, text: "Dashboard", path: "" },
-                        { icon: <FaUserGraduate />, text: "Students", path: "students" },
-                        { icon: <SiGoogleclassroom />, text: "Classes", path: "classes" },
-                        { icon: <GiTeacher />, text: "Teachers", path: "teachers" },
-                        { icon: <GrUserSettings />, text: "User Management", path: "users" },
-                        { icon: <FaUserCircle />, text: "My Profile", path: "profile" }
-                    ]}>
-                        {(item) => (
-                            <Link to={item.path}>
-                                {!toggledNavbar ? (
-                                <Flex p="2" gap="2" align="center">
-                                    {item.icon}
-                                    <Text fontSize="lg">{item.text}</Text>
-                                </Flex>
-                                ) : (
-                                <IconButton variant="ghost" size="lg" aria-label={item.text}>
-                                    {item.icon}
-                                </IconButton>
-                                )}
-                            </Link>
-                        )}
-                    </For>
-                </Flex>
-                <Flex justifySelf="end" mt="auto"
-                justify={ toggledNavbar ? "center" : "space-between"} p="3">
-                    {!toggledNavbar &&
-                    <Flex flexDirection="column">
-                        <Text fontSize="md" fontWeight="bold">{username.toUpperCase()}</Text>
-                        <Text fontSize="sm">{`Role: ${role.toUpperCase()}`}</Text>
-                    </Flex>
-                    }
-                    <IconButton size="sm" onClick={Logout}>
-                        <LuLogOut />
-                    </IconButton>
-                </Flex>
-            </Flex>
-            <Outlet />
-        </Flex>
-    );
+	return (
+		<Flex height="100vh" w="100%">
+			<Flex
+				bg={useColorModeValue("gray.100", "gray.900")}
+				flexDirection="column"
+				gap="1"
+				justify="start"
+				w={toggledNavbar ? "5%" : "15%"}
+				textAlign={"center"}
+			>
+				<Flex flexDir={toggledNavbar ? "column" : "row"} justify="space-around">
+					<IconButton onClick={toggleColorMode} variant="ghost" size="md">
+						{colorMode === "light" ? <LuSun /> : <LuMoon />}
+					</IconButton>
+					<IconButton
+						onClick={() => setToggledNavbar(!toggledNavbar)}
+						variant="ghost"
+						size="md"
+						order={toggledNavbar ? -1 : 0}
+					>
+						{toggledNavbar ? <LuArrowRightFromLine /> : <LuArrowLeftToLine />}
+					</IconButton>
+				</Flex>
+				<Separator size="md" />
+				<Flex flexDirection="column" gap="1">
+					<For
+						each={[
+							{ icon: <FaHome />, text: "Dashboard", path: "" },
+							{ icon: <FaUserGraduate />, text: "Students", path: "students" },
+							{ icon: <SiGoogleclassroom />, text: "Classes", path: "classes" },
+							{ icon: <GiTeacher />, text: "Teachers", path: "teachers" },
+							{ icon: <GrUserSettings />, text: "User Management", path: "users" },
+							{ icon: <FaUserCircle />, text: "My Profile", path: "profile" },
+						]}
+					>
+						{(item) => (
+							<Link to={item.path}>
+								{!toggledNavbar ? (
+									<Flex p="2" gap="2" align="center">
+										{item.icon}
+										<Text fontSize="lg">{item.text}</Text>
+									</Flex>
+								) : (
+									<IconButton variant="ghost" size="lg" aria-label={item.text}>
+										{item.icon}
+									</IconButton>
+								)}
+							</Link>
+						)}
+					</For>
+				</Flex>
+				<Flex justifySelf="end" mt="auto" justify={toggledNavbar ? "center" : "space-between"} p="3">
+					{!toggledNavbar && (
+						<Flex flexDirection="column">
+							<Text fontSize="md" fontWeight="bold">
+								{username.toUpperCase()}
+							</Text>
+							<Text fontSize="sm">{`Role: ${role.toUpperCase()}`}</Text>
+						</Flex>
+					)}
+					<IconButton size="sm" onClick={Logout}>
+						<LuLogOut />
+					</IconButton>
+				</Flex>
+			</Flex>
+			<Outlet />
+		</Flex>
+	);
 }
