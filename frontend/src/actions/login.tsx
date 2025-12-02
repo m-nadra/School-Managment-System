@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation"
 
-export default async function login(formData: FormData) {
+export default async function login(_state: string, formData: FormData) {
     try {
         const response = await fetch("http://backend:5000/api/token", {
             method: "POST",
@@ -12,8 +12,10 @@ export default async function login(formData: FormData) {
                 password: formData.get("password")
             })
         })
-        if (!response.ok)
-            throw Error("Error")
+        if (!response.ok){
+            const errorMessage = await response.json()
+            return errorMessage.detail           
+        }
     }
     catch (error) {
         console.error(error)
